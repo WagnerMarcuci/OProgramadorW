@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:120px;padding:5px;">&nbsp;&nbsp;Recurs&atilde;o</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=xQsIvtgdKGg"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;iostream&gt;
+#include &lt;windows.h&gt;
+
+void recursivo( std::string p_param )
+{
+    WIN32_FIND_DATAA data;
+
+    std::string dir = p_param;
+    dir.append( "*" );
+
+    std::string imprimir = p_param;
+    HANDLE hFind = FindFirstFileA( dir.c_str(), &data);
+
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            if ( data.dwFileAttributes == FILE_ATTRIBUTE_DIRECTORY )
+            {
+                if ( strcmp( data.cFileName, "." ) == 0 ||
+                     strcmp( data.cFileName, ".." ) == 0 )
+                {
+                    continue;
+                }
+
+                dir = p_param;
+                dir.append( data.cFileName );
+                dir.append( "\\" );
+                std::cout &lt;&lt; dir &lt;&lt; std::endl;
+                recursivo( dir );
+            }
+
+        } while (FindNextFileA(hFind, &data));
+
+        FindClose(hFind);
+    }
+}
+
+int main()
+{
+    recursivo( "C:\\" );
+
+    std::cout &lt;&lt; std::endl;
+    return 0;
+}
+</pre>
+</body>
+</html>
