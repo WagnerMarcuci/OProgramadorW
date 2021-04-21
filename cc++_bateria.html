@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:100px;padding:5px;">&nbsp;&nbsp;Bateria</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=scoxrDdOXuo" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;iostream&gt;
+#include &lt;windows.h&gt;
+
+void bateria( void )
+{
+    std::cout &lt;&lt; "BATERIA" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "-------" &lt;&lt; std::endl;
+    SYSTEM_POWER_STATUS * lps = new SYSTEM_POWER_STATUS;
+
+    if ( ! GetSystemPowerStatus( lps ) )
+    {
+        std::cout &lt;&lt; "bateria não disponível." &lt;&lt; std::endl;
+    }
+    else if( lps-&gt;ACLineStatus == 1 )
+    {
+        std::cout &lt;&lt; "bateria ligada na energia." &lt;&lt; std::endl;
+    }
+    else
+    {
+        std::cout &lt;&lt; "bateria em: " &lt;&lt; lps-&gt;BatteryLifePercent &lt;&lt; std::endl;
+    }
+
+    std::cout &lt;&lt; std::endl;
+}
+
+int main()
+{
+    bateria();
+
+    return 1;
+}
+</pre>
+</body>
+</html>

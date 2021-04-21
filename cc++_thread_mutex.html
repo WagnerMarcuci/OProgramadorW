@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:190px;padding:5px;">&nbsp;&nbsp;Thread e Mutex</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=scoxrDdOXuo" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;iostream&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;process.h&gt;
+#include &lt;windows.h&gt;
+
+pthread_mutex_t lock;
+pthread_t rotina[ 2 ];
+
+void * rotina_f1( void * p_param )
+{
+    int * valor = (int *)p_param;
+    srand( 1 );
+
+    for( int i = 0; i &lt; 10; ++i )
+    {
+        pthread_mutex_lock( &lock );
+        int tmp = *valor;
+        tmp++;
+        printf( "f1 id : %d, valor %d\n\n", pthread_self(), *valor );
+
+        ::Sleep( rand() % 1500 );
+        *valor = tmp;
+        pthread_mutex_unlock( &lock );
+    }
+
+    pthread_exit( 0 );
+}
+
+void * rotina_f2( void * p_param )
+{
+    int * valor = (int *)p_param;
+    srand( 1 );
+
+    for( int i = 0; i &lt; 10; ++i )
+    {
+        pthread_mutex_lock( &lock );
+        int tmp = *valor;
+        tmp++;
+        printf( "f2 id : %d, valor %d\n\n", pthread_self(), *valor );
+
+        ::Sleep( rand() % 1500 );
+        *valor = tmp;
+        pthread_mutex_unlock( &lock );
+    }
+
+    pthread_exit( 0 );
+}
+
+int main()
+{
+    printf( "INICIANDO...\n\n");
+    int valor = 0;
+
+    pthread_create( &rotina[ 0 ], NULL, rotina_f1, &valor );
+    pthread_create( &rotina[ 1 ], NULL, rotina_f2, &valor );
+
+    pthread_join( rotina[ 0 ], NULL );
+    pthread_join( rotina[ 1 ], NULL );
+
+    printf( "valor final %d\n\n", valor );
+    printf( "ENCERRADO.\n\n");
+    return 0;
+}
+</pre>
+</div>
+<a id="backtotop" href="#top"><i class="fas fa-chevron-up"></i></a>
+<!-- JAVASCRIPTS -->
+<script src="../layout/scripts/jquery.min.js"></script>
+<script src="../layout/scripts/jquery.backtotop.js"></script>
+<script src="../layout/scripts/jquery.mobilemenu.js"></script>
+</body>
+</html>

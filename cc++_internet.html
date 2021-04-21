@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:100px;padding:5px;">&nbsp;&nbsp;Internet</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=scoxrDdOXuo" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+//
+// Adicionar biblioteca de sensores de api:  -lsensapi ou sensapi.lib
+//
+#include &lt;iostream&gt;
+#include &lt;windows.h&gt;
+#include &lt;sensapi.h&gt;
+
+void internet( void )
+{
+    std::cout &lt;&lt; "INTERNET" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "--------" &lt;&lt; std::endl;
+    DWORD dwSens;
+
+    if ( IsNetworkAlive(&dwSens) == FALSE )
+    {
+        std::cout &lt;&lt; "internet desconectada." &lt;&lt; std::endl;
+        return;
+    }
+
+    std::cout &lt;&lt; "internet conectada." &lt;&lt; std::endl &lt;&lt; std::endl;
+}
+
+int main()
+{
+    internet();
+
+    return 0;
+}
+</pre>
+</div>
+<a id="backtotop" href="#top"><i class="fas fa-chevron-up"></i></a>
+<!-- JAVASCRIPTS -->
+<script src="../layout/scripts/jquery.min.js"></script>
+<script src="../layout/scripts/jquery.backtotop.js"></script>
+<script src="../layout/scripts/jquery.mobilemenu.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:60px;padding:5px;">&nbsp;&nbsp;HD</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=scoxrDdOXuo"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;iostream&gt;
+#include &lt;windows.h&gt;
+
+void hd( void )
+{
+    std::cout &lt;&lt; "HD" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "--" &lt;&lt; std::endl;
+
+    const int HORA = 3600;
+    const char lista[] = "ABCDEFGHIJKLMNOPQRSTUVXYWZ";
+    int executar = HORA;
+
+    for( int i = 0; i &lt; strlen( lista ); ++i )
+    {
+        char drive[ 3 + 1 ] = "?:\\";
+        drive[ 0 ] = lista[ i ];
+        unsigned int tipo = ::GetDriveTypeA( drive );
+
+        switch( tipo )
+        {
+            case DRIVE_UNKNOWN:
+            case DRIVE_NO_ROOT_DIR:
+                continue;
+
+            case DRIVE_REMOVABLE:
+                std::cout &lt;&lt; drive &lt;&lt; " - Removível" &lt;&lt; std::endl;
+                break;
+
+            case DRIVE_FIXED:
+                std::cout &lt;&lt; drive &lt;&lt; " - HD" &lt;&lt; std::endl;
+                break;
+
+            case DRIVE_REMOTE:
+                std::cout &lt;&lt; drive &lt;&lt; " - Remoto/Rede" &lt;&lt; std::endl;
+                break;
+
+            case DRIVE_CDROM:
+                std::cout &lt;&lt; drive &lt;&lt; " - CDRom" &lt;&lt; std::endl;
+                break;
+
+            case DRIVE_RAMDISK:
+                std::cout &lt;&lt; drive &lt;&lt; " - RamDisk" &lt;&lt; std::endl;
+                break;
+        }
+
+        //
+        // verificar espaco em disco
+        //
+        const char * lpRootPathName = drive;
+        DWORD lpSectorsPerCluster = 0;
+        DWORD lpBytesPerSector = 0;
+        DWORD lpNumberOfFreeClusters = 0;
+        DWORD lpTotalNumberOfClusters = 0;
+
+        GetDiskFreeSpaceA(
+          lpRootPathName,
+          &lpSectorsPerCluster,
+          &lpBytesPerSector,
+          &lpNumberOfFreeClusters,
+          &lpTotalNumberOfClusters
+        );
+        unsigned long livre = lpSectorsPerCluster * lpBytesPerSector * ( lpNumberOfFreeClusters / 1024 );
+        unsigned long  gbytes = livre / 1024 / 1024;
+        unsigned long total = lpSectorsPerCluster * lpBytesPerSector * ( lpTotalNumberOfClusters / 1024 );
+        unsigned long  gtot_bytes = total / 1024 / 1024;
+
+        std::cout &lt;&lt; "T " &lt;&lt; gtot_bytes &lt;&lt;
+                     "|L " &lt;&lt; gbytes &lt;&lt;
+                     "|U " &lt;&lt; gtot_bytes - gbytes &lt;&lt; std::endl;
+    }
+
+    std::cout &lt;&lt; std::endl;
+}
+
+int main()
+{
+    hd();
+
+    return 1;
+}
+</pre>
+</div>
+<a id="backtotop" href="#top"><i class="fas fa-chevron-up"></i></a>
+<!-- JAVASCRIPTS -->
+<script src="../layout/scripts/jquery.min.js"></script>
+<script src="../layout/scripts/jquery.backtotop.js"></script>
+<script src="../layout/scripts/jquery.mobilemenu.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:70px;padding:5px;">&nbsp;&nbsp;CPU</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=scoxrDdOXuo" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;iostream&gt;
+#include &lt;windows.h&gt;
+
+void cpu( void )
+{
+    std::cout &lt;&lt; "CPU" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "---" &lt;&lt; std::endl;
+
+    DWORD idlLow = 0, idlHigh = 0, kerLow = 0, kerHigh = 0,
+          usrLow = 0, usrHigh = 0;
+    __int64 idlTotal = 0, usrTotal = 0, kerTotal = 0, sys = 0,
+            cpu = 0, idlDif = 0, usrDif = 0, kerDif = 0, idlLast = 0,
+            kerLast = 0, usrLast = 0;
+
+    FILETIME idleTime, kernelTime, userTime;
+
+    while( true )
+    {
+        BOOL res = GetSystemTimes(&idleTime, &kernelTime, &userTime);
+
+        if (res)
+        {
+            idlLow = idleTime.dwLowDateTime;
+            idlHigh = idleTime.dwHighDateTime;
+            idlTotal = idlHigh;
+            idlTotal = idlTotal &lt;&lt; 32;
+            idlTotal += idlLow;
+            idlDif = idlTotal - idlLast;
+
+            kerLow = kernelTime.dwLowDateTime;
+            kerHigh = kernelTime.dwHighDateTime;
+            kerTotal = kerHigh;
+            kerTotal = kerTotal &lt;&lt; 32;
+            kerTotal += kerLow;
+            kerDif = kerTotal - kerLast;
+
+            usrLow = userTime.dwLowDateTime;
+            usrHigh = userTime.dwHighDateTime;
+            usrTotal = usrHigh;
+            usrTotal = usrTotal &lt;&lt; 32;
+            usrTotal += usrLow;
+            usrDif = usrTotal - usrLast;
+
+            sys = kerDif + usrDif;
+            if (sys != 0)
+            {
+                cpu = ((sys - idlDif) * 100 / sys);
+            }
+
+            idlLast = idlTotal;
+            usrLast = usrTotal;
+            kerLast = kerTotal;
+        }
+        else
+        {
+            cpu = -1;
+        }
+
+        std::cout &lt;&lt; "CPU " &lt;&lt; static_cast&lt; int &gt;( cpu ) &lt;&lt; std::endl;
+        ::Sleep( 1000 );
+    }
+
+    std::cout &lt;&lt; std::endl;
+}
+
+int main()
+{
+    cpu();
+
+    return 1;
+}
+</pre>
+</div>
+<a id="backtotop" href="#top"><i class="fas fa-chevron-up"></i></a>
+<!-- JAVASCRIPTS -->
+<script src="../layout/scripts/jquery.min.js"></script>
+<script src="../layout/scripts/jquery.backtotop.js"></script>
+<script src="../layout/scripts/jquery.mobilemenu.js"></script>
+</body>
+</html>
