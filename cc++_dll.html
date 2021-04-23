@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:170px;padding:5px;">&nbsp;&nbsp;Windows DLL</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=Xop3EIE2t14" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+
+<h3>dll.h</h3>
+#ifndef _DLL_H_
+#define _DLL_H_
+
+#define DLLEXPORT extern "C" __declspec(dllexport)
+
+DLLEXPORT int multiplicar( int x, int y );
+DLLEXPORT char * textor( void );
+
+#endif
+<h3>dllmain.cpp</h3>
+#include &lt;windows.h&gt;
+#include "dll.h"
+
+DLLEXPORT int multiplicar( int x, int y )
+{
+	return x * y;
+}
+DLLEXPORT char * textor( void )
+{
+	return "Wagner DLL";
+}
+
+
+BOOL WINAPI DllMain(HINSTANCE hinstDLL,DWORD fdwReason,LPVOID lpvReserved)
+{
+	switch(fdwReason)
+	{
+		case DLL_PROCESS_ATTACH:
+		{
+			break;
+		}
+		case DLL_PROCESS_DETACH:
+		{
+			break;
+		}
+		case DLL_THREAD_ATTACH:
+		{
+			break;
+		}
+		case DLL_THREAD_DETACH:
+		{
+			break;
+		}
+	}
+	
+	/* Return TRUE on success, FALSE on failure */
+	return TRUE;
+}
+<h3>chamada da dll</h3>
+#include &lt;stdio.h&gt;
+#include &lt;windows.h&gt;
+
+int main()
+{
+    typedef int (*multiplicar)(int,int);
+    typedef char * (*textor)(void);
+
+    HMODULE hInst = LoadLibraryA( "Project1.dll" );
+
+    if ( hInst == NULL )
+    {
+        printf( "erro na carga da dll\n\n" );
+        return 1;
+    }
+
+    multiplicar mult = (multiplicar)GetProcAddress( hInst, "multiplicar" );
+    textor text = (textor)GetProcAddress( hInst, "textor" );
+
+    printf( "multiplicar: %d\n", mult( 10, 20 ) );
+    printf( "texto: %s\n", text() );
+
+    FreeLibrary( hInst );
+
+    printf( "\n\n" );
+    return 0;
+}
+</pre>
+</body>
+</html>
