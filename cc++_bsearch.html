@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:100px;padding:5px;">&nbsp;&nbsp;bsearch</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=scoxrDdOXuo" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int comparar(const void * a, const void * b)
+{
+  return ( *(int*)a - *(int*)b );
+}
+
+int main ()
+{
+    int valor[ 6 ] = { 10, 20, 30, 40, 50, 60 };
+    int chave = 30;
+    int * achou = NULL;
+
+     achou = (int*) bsearch (&chave, valor, 6, sizeof(int), comparar);
+
+
+     if ( achou )
+     {
+         printf( "sim, achei: %d\n", *achou );
+     }
+
+  return 0;
+}
+</pre>
+</body>
+</html>

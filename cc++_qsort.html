@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:80px;padding:5px;">&nbsp;&nbsp;qsort</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=scoxrDdOXuo" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int comparar (const void * a, const void * b)
+{
+    return ( *(int*)a - *(int*)b );
+}
+
+int valor[ 6 ] = { 50, 20, 60, 40, 10, 30 };
+
+int main ()
+{
+    qsort (valor, 6, sizeof (int), comparar);
+
+    for( int i = 0; i &lt; 6; ++ i )
+    {
+        printf( "%d - %d\n", i, valor[ i ] );
+    }
+
+    return 0;
+}
+</pre>
+</body>
+</html>
