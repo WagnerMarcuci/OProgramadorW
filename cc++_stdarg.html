@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:100px;padding:5px;">&nbsp;&nbsp;stdarg.h</h2>
+<br/>
+<a href="https://studio.youtube.com/video/ob3manbUuFQ/edit"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdarg.h&gt;
+
+int parametros( int p_qtde, ... )
+{
+    int i;
+    char * nome;
+
+    va_list vl;
+    
+    va_start(vl,p_qtde);
+    
+    for (i=0;i&lt;p_qtde;i++)
+    {
+    
+      nome = va_arg( vl, char * );
+      
+      printf ("%s\n", nome );
+    }
+
+    va_end(vl);
+    
+    printf ("\n");
+
+}
+int main()
+{
+    parametros( 3, "Wagner", "Marcuci", "final" );
+
+    printf( "fim.\n" );
+
+    printf( "\n\n" );
+    return 0;
+}
+</pre>
+</body>
+</html>
