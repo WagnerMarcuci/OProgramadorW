@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:90px;padding:5px;">&nbsp;&nbsp;Signal</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=btDTGXGAU4M"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;signal.h&gt;
+
+void sinalizado( int p_sinal )
+{
+    switch( p_sinal )
+    {
+        case SIGINT:
+            printf( "SIGINT\n" );
+            break;
+        case SIGILL:
+            printf( "SIGILL\n" );
+            break;
+        case SIGABRT_COMPAT:
+            printf( "SIGABRT_COMPAT\n" );
+            break;
+        case SIGFPE:
+            printf( "SIGFPE\n" );
+            break;
+        case SIGSEGV:
+            printf( "SIGSEGV\n" );
+            break;
+        case SIGTERM:
+            printf( "SIGTERM\n" );
+            break;
+        case SIGBREAK:
+            printf( "SIGBREAK\n" );
+            break;
+        case SIGABRT:
+            printf( "SIGABRT\n" );
+            break;
+        default:
+            printf( "indefinido.\n" );
+            break;
+    }
+}
+
+int main()
+{
+    void (*emitir_sinal)(int);
+
+    emitir_sinal = signal( SIGINT, sinalizado ) ;
+    emitir_sinal = signal( SIGTERM, sinalizado ) ;
+    emitir_sinal = signal( SIGBREAK, sinalizado ) ;
+
+    printf( "iniciando programa...\n" );
+    raise( SIGINT );
+
+    for( int i = 0; i &lt; 100; ++i )
+    {
+        if ( i == 3 )
+        {
+            raise( SIGBREAK );
+        }
+
+        if ( i == 94 )
+        {
+            raise ( SIGTERM );
+        }
+    }
+
+    printf( "fim.\n" );
+
+    printf( "\n\n" );
+    return 0;
+}
+</pre>
+</body>
+</html>
