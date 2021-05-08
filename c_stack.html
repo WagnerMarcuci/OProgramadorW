@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:140px;padding:5px;">&nbsp;&nbsp;Stack/Pilha</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=3Q6JLNw6_IM&t=22s" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+<h3>pilha.h</h3>
+#ifndef PILHA_H
+#define PILHA_H
+
+struct _stack_int
+{
+    int ( *empty )( void );
+    int ( *size )( void );
+    int ( *front )( void );
+    int ( *back )( void );
+    int ( *push )( int );
+    void ( *pop )( void );
+} stack_int;
+
+#endif // PILHA_H
+<h3>pilha.cpp</h3>
+#include "pilha.h"
+
+// ----------------------------------------------------------------
+struct _stack_int_internal
+{
+    int int_var;
+    struct _stack_int_internal * prev;
+    struct _stack_int_internal * next;
+};
+
+struct _stack_int_internal * stack_pointer_first;
+struct _stack_int_internal * stack_pointer_last;
+struct _stack_int_internal * stack_data_internal;
+int stack_size_all;
+
+// ----------------------------------------------------------------
+int stack_int_empty( void )
+{
+    return ( stack_size_all == 0 ? 1 : 0 );
+}
+// ----------------------------------------------------------------
+int stack_int_size( void )
+{
+    return stack_size_all;
+}
+// ----------------------------------------------------------------
+int stack_int_push( int p_int )
+{
+    if ( !stack_data_internal )
+    {
+        stack_data_internal = malloc( sizeof( struct _stack_int_internal ) );
+
+        if ( !stack_data_internal )
+        {
+            return 0;
+        }
+
+        stack_pointer_first = stack_data_internal;
+        stack_pointer_last = stack_data_internal;
+        stack_data_internal-&gt;int_var = p_int;
+        stack_data_internal-&gt;prev = 0;
+        stack_data_internal-&gt;next = 0;
+        stack_size_all = 1;
+        return 1;
+    }
+
+    stack_data_internal = malloc( sizeof( struct _stack_int_internal ) );
+
+    if ( !stack_data_internal )
+    {
+        return 0;
+    }
+
+    stack_data_internal-&gt;prev = stack_pointer_last;
+    stack_data_internal-&gt;int_var = p_int;
+    stack_data_internal-&gt;next = 0;
+
+    stack_pointer_last-&gt;next = stack_data_internal;
+    stack_pointer_last = stack_data_internal;
+
+    stack_size_all++;
+    return 1;
+}
+// ----------------------------------------------------------------
+int stack_int_front( void )
+{
+    if ( !stack_pointer_last )
+    {
+        return -1;
+    }
+
+    return stack_pointer_last-&gt;int_var;
+}
+// ----------------------------------------------------------------
+int stack_int_back( void )
+{
+    if ( !stack_pointer_first )
+    {
+        return -1;
+    }
+
+    return stack_pointer_first-&gt;int_var;
+}
+// ----------------------------------------------------------------
+void stack_int_pop( void )
+{
+    struct _stack_int_internal * tmp = 0;
+
+    if ( stack_pointer_last )
+    {
+        tmp = stack_pointer_last-&gt;prev;
+    }
+
+    if ( !tmp )
+    {
+        stack_pointer_last = 0;
+        stack_pointer_first = 0;
+        stack_size_all = 0;
+        return;
+    }
+
+    free(stack_pointer_last);
+    stack_pointer_last = tmp;
+    stack_pointer_last-&gt;next = 0;
+    stack_size_all--;
+}
+// ----------------------------------------------------------------
+void stack_int_start( void )
+{
+    stack_pointer_first = 0;
+    stack_pointer_last = 0;
+    stack_size_all = 0;
+    stack_data_internal = 0;
+    stack_int.empty = stack_int_empty;
+    stack_int.size = stack_int_size;
+    stack_int.front = stack_int_front;
+    stack_int.back = stack_int_back;
+    stack_int.push = stack_int_push;
+    stack_int.pop = stack_int_pop;
+}
+// ----------------------------------------------------------------
+<h3>main.cpp</h3>
+#include &lt;stdio.h&gt;
+#include "pilha.h"
+
+int main()
+{
+    stack_int_start();
+
+//    int i = stack_int.push( 8 );
+
+    printf( "size: %d\n", stack_int.size() );
+    printf( "empty: %d\n", stack_int.empty() );
+
+    stack_int.push( 1 );
+    stack_int.push( 2 );
+    stack_int.push( 3 );
+    stack_int.push( 4 );
+
+//    stack_int.pop();
+//    stack_int.pop();
+//    stack_int.pop();
+//    stack_int.pop();
+//    stack_int.pop();
+
+    printf( "front: %d\n", stack_int.front() );
+    printf( "back: %d\n", stack_int.back() );
+
+    printf( "\n---------------------------\n" );
+    printf( "size: %d\n", stack_int.size() );
+    printf( "empty: %d\n", stack_int.empty() );
+
+//    int ( *pop )( int );
+
+    printf("\n\n");
+    return 0;
+}
+
+
+</pre>
+</body>
+</html>
