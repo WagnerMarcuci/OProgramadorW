@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:270px;padding:5px;">&nbsp;&nbsp;Lista Dupla Encadeada</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=EdPNGrn35hY"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+<h3>lista.h</h3>
+#ifndef LISTA_H
+#define LISTA_H
+
+#include &lt;string&gt;
+
+class Lista
+{
+    public:
+        Lista();
+        ~Lista();
+        bool inserir_registro( char *, int, char );
+        void listar_registros( void );
+        void listar_registros_invertido( void );
+        bool apagar_registro( char * );
+        bool alterar_registro( char *, char *, int, char );
+
+    private:
+        struct _dados
+        {
+            std::string nome;
+            int idade;
+            char sexo;
+            struct _dados * anterior;
+            struct _dados * proximo;
+        };
+
+        struct _dados * primeiro_registro;
+        struct _dados * ultimo_registro;
+
+};
+
+#endif
+<h3>lista.cpp</h3>
+#include &lt;iostream&gt;
+#include "lista.h"
+// ------------------------------------------------------------
+Lista::Lista()
+{
+    this-&gt;primeiro_registro = 0;
+    this-&gt;ultimo_registro = 0;
+}
+// ------------------------------------------------------------
+Lista::~Lista()
+{
+
+}
+// ------------------------------------------------------------
+bool Lista::inserir_registro( char * p_nome, int p_idade, char p_sexo )
+{
+    struct _dados * dados;
+
+    if ( !this-&gt;primeiro_registro )
+    {
+        dados = new struct _dados;
+
+        if ( !dados )
+        {
+            return false;
+        }
+
+        dados-&gt;nome = p_nome;
+        dados-&gt;idade = p_idade;
+        dados-&gt;sexo = p_sexo;
+        dados-&gt;anterior = 0;
+        dados-&gt;proximo = 0;
+
+        this-&gt;primeiro_registro = dados;
+        this-&gt;ultimo_registro = dados;
+        return true;
+    }
+
+    dados = new struct _dados;
+
+    if ( !dados )
+    {
+        return false;
+    }
+
+    ultimo_registro-&gt;proximo = dados;
+
+    dados-&gt;nome = p_nome;
+    dados-&gt;idade = p_idade;
+    dados-&gt;sexo = p_sexo;
+    dados-&gt;anterior = this-&gt;ultimo_registro;
+    dados-&gt;proximo = 0;
+
+    this-&gt;ultimo_registro = dados;
+    return true;
+}
+// ------------------------------------------------------------
+void Lista::listar_registros( void )
+{
+    struct _dados * registro_atual = this-&gt;primeiro_registro;
+    std::cout &lt;&lt; "-----------------------------------" &lt;&lt; std::endl;
+
+    while( registro_atual )
+    {
+        std::cout &lt;&lt; registro_atual-&gt;nome &lt;&lt; " "
+                  &lt;&lt; registro_atual-&gt;idade &lt;&lt; " "
+                  &lt;&lt; registro_atual-&gt;sexo &lt;&lt; std::endl;
+
+        registro_atual = registro_atual-&gt;proximo;
+    }
+}
+// ------------------------------------------------------------
+void Lista::listar_registros_invertido( void )
+{
+    struct _dados * registro_atual = this-&gt;ultimo_registro;
+    std::cout &lt;&lt; "-----------------------------------" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "--- LISTAGEM INVERTIDA ---" &lt;&lt; std::endl;
+
+    while( registro_atual )
+    {
+        std::cout &lt;&lt; registro_atual-&gt;nome &lt;&lt; " "
+                  &lt;&lt; registro_atual-&gt;idade &lt;&lt; " "
+                  &lt;&lt; registro_atual-&gt;sexo &lt;&lt; std::endl;
+
+        registro_atual = registro_atual-&gt;anterior;
+    }
+}
+// ------------------------------------------------------------
+bool Lista::apagar_registro( char * p_nome )
+{
+    if ( !p_nome )
+    {
+        return false;
+    }
+
+    struct _dados * registro_atual = this-&gt;primeiro_registro;
+
+    while( registro_atual )
+    {
+        if ( registro_atual-&gt;nome == p_nome )
+        {
+            std::cout &lt;&lt; "------ ENCONTRADO E APAGADO --------" &lt;&lt; std::endl;
+            std::cout &lt;&lt; registro_atual-&gt;nome &lt;&lt; " "
+                      &lt;&lt; registro_atual-&gt;idade &lt;&lt; " "
+                      &lt;&lt; registro_atual-&gt;sexo &lt;&lt; std::endl;
+
+            if ( registro_atual-&gt;anterior == 0 )
+            {
+                struct _dados * proximo = registro_atual-&gt;proximo;
+                proximo-&gt;anterior = 0;
+                this-&gt;primeiro_registro = proximo;
+                delete registro_atual;
+                return true;
+            }
+
+            struct _dados * anterior = registro_atual-&gt;anterior;
+            struct _dados * proximo = registro_atual-&gt;proximo;
+            anterior-&gt;proximo = proximo;
+            proximo-&gt;anterior = anterior;
+            delete registro_atual;
+
+            return true;
+        }
+        registro_atual = registro_atual-&gt;proximo;
+    }
+
+    return false;
+}
+// ------------------------------------------------------------
+bool Lista::alterar_registro( char * p_pesquisa, char * p_nome, int p_idade, char p_sexo )
+{
+    struct _dados * registro_atual = this-&gt;primeiro_registro;
+
+    while( registro_atual )
+    {
+        if ( registro_atual-&gt;nome == p_pesquisa )
+        {
+            registro_atual-&gt;nome = p_nome;
+            registro_atual-&gt;idade = p_idade;
+            registro_atual-&gt;sexo = p_sexo;
+            return true;
+        }
+
+        registro_atual = registro_atual-&gt;proximo;
+    }
+
+    return false;
+}
+// ------------------------------------------------------------
+<h3>main.cpp</h3>
+#include &lt;iostream&gt;
+#include "lista.h"
+
+int main()
+{
+    Lista lista;
+    bool rc = false;
+
+    rc = lista.inserir_registro( "nome_01", 1, 'M' );
+    std::cout &lt;&lt; "rc: " &lt;&lt; rc &lt;&lt; std::endl;
+
+    rc = lista.inserir_registro( "nome_02", 2, 'F' );
+    std::cout &lt;&lt; "rc: " &lt;&lt; rc &lt;&lt; std::endl;
+
+    rc = lista.inserir_registro( "nome_03", 3, 'M' );
+    std::cout &lt;&lt; "rc: " &lt;&lt; rc &lt;&lt; std::endl;
+
+    rc = lista.inserir_registro( "nome_04", 4, 'F' );
+    std::cout &lt;&lt; "rc: " &lt;&lt; rc &lt;&lt; std::endl;
+
+    lista.listar_registros();
+
+//    rc = lista.apagar_registro( "nome_01" );
+//    rc = lista.apagar_registro( "nome_02" );
+    rc = lista.alterar_registro( "nome_03", "NOVO_NOME", 99, 'X' );
+
+    std::cout &lt;&lt; "rc: " &lt;&lt; rc &lt;&lt; std::endl;
+
+    lista.listar_registros();
+
+    lista.listar_registros_invertido();
+
+    std::cout &lt;&lt; std::endl;
+
+    return 0;
+}
+
+</pre>
+</body>
+</html>
