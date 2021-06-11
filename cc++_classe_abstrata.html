@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:200px;padding:5px;">&nbsp;&nbsp;Classe Abstrata</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=Vm-LdMfZ7QQ"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+<h3>empregado.h</h3>
+#ifndef EMPREGADO_H
+#define EMPREGADO_H
+#include &lt;string&gt;
+
+class Empregado
+{
+    public:
+        Empregado();
+        virtual void setNome( char * );
+        virtual void setProfissao( char * );
+        virtual void setSexo( char ) = 0;
+        virtual char getSexo( void ) = 0;
+
+        std::string getNome( void ) { return this-&gt;nome; }
+        std::string getProfissao( void ) { return this-&gt;profissao; }
+
+    protected:
+        std::string nome;
+        std::string profissao;
+};
+
+#endif // EMPREGADO_H
+
+<h3>empregado.cpp</h3>
+#include "empregado.h"
+
+Empregado::Empregado()
+{
+
+}
+
+void Empregado::setNome(char * p_nome )
+{
+    this-&gt;nome = p_nome;
+}
+
+void Empregado::setProfissao(char * p_profissao )
+{
+    this-&gt;profissao = p_profissao;
+}
+<h3>analista.h</h3>
+#ifndef ANALISTA_H
+#define ANALISTA_H
+#include "empregado.h"
+
+class Analista : public Empregado
+{
+    public:
+        Analista() { }
+        void setNome( char * p_nome ) { this-&gt;nome = p_nome; }
+        void setSexo( char sexo ) { this-&gt;sexo = sexo; }
+        char getSexo( void ) { return this-&gt;sexo; }
+
+    private:
+        char sexo;
+};
+
+#endif // ANALISTA_H
+<h3>main.cpp</h3>
+#include &lt;iostream&gt;
+#include "analista.h"
+
+int main()
+{
+    Analista analista;
+
+    analista.setNome( "Wagner" );
+    analista.setProfissao( "Analista" );
+    analista.setSexo( 'M' );
+
+    std::cout &lt;&lt; "nome: " &lt;&lt; analista.getNome() &lt;&lt; std::endl;
+    std::cout &lt;&lt; "profissao: " &lt;&lt; analista.getProfissao() &lt;&lt; std::endl;
+    std::cout &lt;&lt; "sexo: " &lt;&lt; analista.getSexo() &lt;&lt; std::endl;
+
+    std::cout &lt;&lt; std::endl;
+    return 0;
+};
+</pre>
+</body>
+</html>
