@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:200px;padding:5px;">&nbsp;&nbsp;Console Windows</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=CiEbPJJpPBk" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;windows.h&gt;
+
+void clear()
+{
+    COORD topLeft  = { 0, 0 };
+    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO screen;
+    DWORD written;
+
+    GetConsoleScreenBufferInfo(console, &screen);
+    FillConsoleOutputCharacterA(
+        console, ' ', screen.dwSize.X * screen.dwSize.Y, topLeft, &written
+    );
+
+    SetConsoleCursorPosition(console, topLeft);
+}
+
+void gotoxy( int lin, int col )
+{
+    COORD p = { col, lin };
+    // linha comeca em 0
+    SetConsoleCursorPosition( GetStdHandle( STD_OUTPUT_HANDLE ), p );
+}
+
+COORD get_xy( void )
+{
+    CONSOLE_SCREEN_BUFFER_INFO screen;
+    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE) , &screen))
+    {
+        return screen.dwCursorPosition;
+    }
+    else
+    {
+        // The function failed. Call GetLastError() for details.
+        COORD invalid = { 0, 0 };
+        return invalid;
+    }
+}
+
+void set_cor( int p_lin, int p_col )
+{
+    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO screen;
+    DWORD written;
+    COORD coord  = { p_col, p_lin };
+
+    GetConsoleScreenBufferInfo(console, &screen);
+
+    FillConsoleOutputAttribute(
+    console, FOREGROUND_RED | BACKGROUND_GREEN,
+    20, coord, &written
+    );
+
+}
+
+int main()
+{
+    COORD xy = { 0, 0 };
+    clear();
+    gotoxy( 5, 30 );
+
+    xy = get_xy();
+    printf( "coord: %d, %d\n", xy.Y, xy.X );
+    set_cor( 5, 30 );
+
+    printf("Hello World!\n");
+
+    //    SetConsoleTextAttribute( GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | BACKGROUND_GREEN );
+
+    return 0;
+}
+</pre>
+</body>
+</html>
