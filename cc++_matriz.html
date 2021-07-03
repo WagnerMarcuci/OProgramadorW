@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:100px;padding:5px;">&nbsp;&nbsp;Matriz</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=sqJeUrRnrsg" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+
+#define TRUE 1
+#define FALSE 0
+
+struct _stMatriz
+{
+    int * matriz;
+    int lin;
+    int col;
+};
+
+int criar_matriz( struct _stMatriz * p_stMatriz )
+{
+    char clin[ 10 + 1 ] = "";
+    char ccol[ 10 + 1 ] = "";
+
+    system( "cls" );
+    fflush( stdin );
+
+    if ( p_stMatriz-&gt;matriz )
+    {
+        free( p_stMatriz-&gt;matriz );
+    }
+
+    printf( "\ninforme quantidade de linhas ou ENTER: " );
+    fgets( clin, sizeof( clin ), stdin );
+    p_stMatriz-&gt;lin = atoi( clin );
+
+    if ( p_stMatriz-&gt;lin == 0 )
+    {
+        return FALSE;
+    }
+
+    printf( "\ninforme quantidade de colunas ou ENTER: ");
+    fgets( ccol, sizeof( ccol ), stdin );
+    p_stMatriz-&gt;col = atoi( ccol );
+
+    if ( p_stMatriz-&gt;col == 0 )
+    {
+        return FALSE;
+    }
+
+    p_stMatriz-&gt;matriz = malloc( p_stMatriz-&gt;lin * p_stMatriz-&gt;col * sizeof( int ) );
+    return TRUE;
+}
+
+int preencher_matriz( struct _stMatriz * p_stMatriz )
+{
+    char valor[ 10 + 1 ] = "";
+    int indice = 0;
+    system( "cls" );
+    fflush( stdin );
+
+    if ( p_stMatriz-&gt;matriz == 0 )
+    {
+        printf( "\n** precisa criar matriz **\n" );
+        return FALSE;
+    }
+
+    for( int i = 0; i &lt; p_stMatriz-&gt;lin; ++i )
+    {
+        for( int j = 0; j &lt; p_stMatriz-&gt;col; ++j )
+        {
+            printf( "informe valor para posicao %d x %d: ", i + 1, j + 1 );
+            fgets( valor, sizeof( valor ), stdin );
+            p_stMatriz-&gt;matriz[ indice ] = atoi( valor );
+            indice++;
+        }
+    }
+
+    return TRUE;
+}
+
+int main()
+{
+    struct _stMatriz stMatriz;
+
+    stMatriz.matriz = 0;
+    stMatriz.col = 0;
+    stMatriz.lin = 0;
+
+    char op[ 1 + 1 ] = "";
+    system( "cls" );
+
+    while( op[ 0 ] != '9' )
+    {
+        printf( "\n1. criar matriz" );
+        printf( "\n2. preencher matriz" );
+        printf( "\n3. mostrar matriz" );
+        printf( "\n9. SAIR" );
+
+        printf( "\n\nopcao: " );
+        fgets( op, sizeof( op ), stdin );
+        fflush( stdin );
+
+        switch( op[ 0 ] )
+        {
+            case '1':
+                if ( criar_matriz( &stMatriz ) == TRUE )
+                {
+                    printf( "\n** matriz criada como %d x %d **\n", stMatriz.lin, stMatriz.col );
+                }
+                else
+                {
+                    printf( "a matriz nao foi criada.\n" );
+                }
+                break;
+
+            case '2':
+                if ( preencher_matriz( &stMatriz ) == TRUE )
+                {
+                    printf( "\n** matriz preenchida. \n**" );
+                }
+                else
+                {
+                    printf( "\n** a matriz nao foi preenchida.**\n" );
+                }
+                break;
+
+            case '3':
+                system( "cls" );
+                if ( stMatriz.matriz == 0 )
+                {
+                    printf( "\n** precisa criar matriz **\n" );
+                }
+                else
+                {
+                    for( int i = 0, indice = 0; i &lt; stMatriz.lin; ++i )
+                    {
+                        for( int j = 0; j &lt; stMatriz.col; ++j )
+                        {
+                            printf( "%d ", stMatriz.matriz[ indice++ ] );
+                        }
+
+                        printf( "\n" );
+                    }
+                }
+
+                break;
+
+            case '9':
+                break;
+
+            default:
+                printf( "opcao invalida.\n" );
+                break;
+        }
+    }
+
+    if ( stMatriz.matriz )
+    {
+        free( stMatriz.matriz );
+    }
+
+    printf("\n\n");
+    return 0;
+}
+</pre>
+</body>
+</html>
