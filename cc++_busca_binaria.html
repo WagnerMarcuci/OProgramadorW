@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:180px;padding:5px;">&nbsp;&nbsp;Busca Bin&aacute;ria</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=EMS-s2nlvss&pp=sAQA" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+#define MAX 10
+
+int comparar (const void * a, const void * b)
+{
+    return ( *(int*)a - *(int*)b );
+}
+
+int main()
+{
+    char cValor[ 10 + 1 ] = "";
+    int valor[ MAX ];
+    int procurar = 0;
+    int metade = 0;
+    int inicio = 0;
+    int fim = 0;
+
+    memset( &valor, '\0', sizeof( int ) * MAX );
+
+    for( int i = 0; i &lt; MAX; ++i )
+    {
+        printf( "entre com o %do. numero: ", i + 1 );
+        fgets( cValor, sizeof( cValor ), stdin );
+
+        valor[ i ] = atoi( cValor );
+    }
+
+    printf( "\n\nIMPRIMIR ENTRADA\n" );
+
+    for( int i = 0; i &lt; MAX; ++i )
+    {
+        printf( "%d - %d\n", i + 1, valor[ i ] );
+    }
+
+    qsort (valor, MAX, sizeof (int), comparar);
+
+    printf( "\n\nIMPRIMIR ORGANIZADO\n" );
+
+    for( int i = 0; i &lt; MAX; ++i )
+    {
+        printf( "%d - %d\n", i, valor[ i ] );
+    }
+
+    printf( "\n\nprocurar pelo numero: " );
+    fgets( cValor, sizeof( cValor ), stdin );
+    procurar = atoi( cValor );
+    inicio = 0;
+    fim = sizeof( valor ) / sizeof( valor[ 0 ] );
+    fim -= 1;
+
+    while( 1 )
+    {
+        metade = ( inicio + fim ) / 2;
+        printf( "inicio: %d, fim: %d = metade: %d\n", inicio, fim, metade );
+
+        if ( procurar == valor[ metade ] )
+        {
+            printf( "valor no indice %d\n", metade );
+            break;
+        }
+        else if ( procurar &lt; valor[ metade ] )
+        {
+            fim = metade - 1;
+            continue;
+        }
+        else if( procurar &gt; valor[ metade ] )
+        {
+            inicio = metade + 1;
+        }
+        else
+        {
+            printf( "busca finalizada, nao encontrado.\n" );
+            break;
+        }
+
+    }
+
+    return 0;
+}
+</pre>
+</body>
+</html>
