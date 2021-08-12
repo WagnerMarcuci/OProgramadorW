@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:100px;padding:5px;">&nbsp;&nbsp;ListBox</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=jwjEMpJ7biY" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;windows.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;tchar.h&gt;
+
+HWND g_listbox = 0;
+HINSTANCE g_instance = 0;
+
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+        case WM_SETFOCUS:
+            printf( "WM_SETFOCUS \n" );
+            break;
+
+        case WM_ACTIVATE:
+            printf( "WM_ACTIVATE \n" );
+            break;
+
+        case WM_CREATE:
+            printf( "WM_CREATE \n" );
+            break;
+
+        case WM_SIZE:
+            printf( "WM_SIZE \n" );
+            break;
+
+        case WM_MOVE:
+    //        printf( "WM_MOVE \n" );
+            break;
+
+        case WM_LBUTTONDOWN:
+            printf( "WM_LBUTTONDOWN \n" );
+            break;
+
+        case WM_LBUTTONUP:
+            printf( "WM_LBUTTONUP \n" );
+
+            if ( g_listbox == NULL )
+            {
+                g_listbox = CreateWindow(
+                    TEXT("LISTBOX"),
+                    TEXT(""),
+                    WS_CHILD | WS_VISIBLE | LBS_NOTIFY | LBS_STANDARD | WS_BORDER,
+                    100,
+                    50,
+                    200,
+                    200, // altura
+                    hwnd,
+                    NULL,
+                    g_instance,
+                    NULL );
+            }
+
+            SendMessage( g_listbox, LB_ADDSTRING, 0, (LPARAM)TEXT( "Linha 1" ) );
+            SendMessage( g_listbox, LB_ADDSTRING, 0, (LPARAM)TEXT( "Linha 2" ) );
+            SendMessage( g_listbox, LB_ADDSTRING, 0, (LPARAM)TEXT( "Linha 3" ) );
+            SendMessage( g_listbox, LB_ADDSTRING, 0, (LPARAM)TEXT( "Linha 4" ) );
+            break;
+
+        case WM_COMMAND:
+            printf( "WM_COMMAND \n" );
+
+            if ( lParam == g_listbox )
+            {
+                WORD acao = HIWORD( wParam );
+
+                switch( acao )
+                {
+                    case LBN_SELCHANGE:
+                        printf( "LBN_SELCHANGE\n" );
+                        break;
+
+                    case LBN_DBLCLK:
+                        printf( "LBN_DBLCLK\n" );
+                        break;
+
+                    case LBN_SELCANCEL:
+                        printf( "LBN_SELCANCEL\n" );
+                        break;
+
+                    case LBN_SETFOCUS:
+                        printf( "LBN_SETFOCUS\n" );
+                        break;
+
+                    case LBN_KILLFOCUS:
+                        printf( "LBN_KILLFOCUS\n" );
+                        break;
+                    default:
+                        printf( "outro\n" );
+                        break;
+                }
+            }
+            break;
+
+        case WM_RBUTTONDOWN:
+            printf( "WM_RBUTTONDOWN \n" );
+            break;
+
+        case WM_RBUTTONUP:
+            printf( "WM_RBUTTONUP \n" );
+//            SendMessage( g_listbox, LB_DELETESTRING, (WPARAM) 1, 0 );
+            printf( "qtde: %d\n", SendMessage( g_listbox, LB_GETCOUNT, 0 , 0 ) );
+
+            {
+                int i = SendMessage( g_listbox, LB_GETCURSEL, 0, 0 );
+                printf( "cursel: %d\n", i );
+
+                char buffer[ 100 + 1 ] = "";
+                SendMessage( g_listbox, LB_GETTEXT, i, buffer );
+                _tprintf( _T( "buffer: %s\n" ), buffer );
+
+                printf( "length: %d\n", SendMessage( g_listbox, LB_GETTEXTLEN, i, 0 ) );
+
+//                SendMessage( g_listbox, LB_RESETCONTENT, 0, 0 );
+                SendMessage( g_listbox, LB_DELETESTRING, i, 0 );
+                SendMessage( g_listbox, LB_INSERTSTRING, i, (LPARAM)TEXT( "Novo Valor") );
+            }
+            break;
+
+        case WM_PAINT:
+            {
+                printf( "WM_PAINT \n" );
+
+                PAINTSTRUCT ps;
+                BeginPaint( hwnd, &ps );
+                EndPaint( hwnd, &ps );
+                return 0;
+            }
+
+        case WM_DESTROY:
+            printf( "WM_DESTROY \n" );
+            PostQuitMessage(0);
+            return 0;
+    }
+
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
+
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
+{
+    const char * CLASS_NAME  = TEXT("CLASSE_WINDOWS");
+    g_instance = hInstance;
+
+    WNDCLASS wc = { };
+
+    wc.lpfnWndProc   = WindowProc;
+    wc.hInstance     = hInstance;
+    wc.lpszClassName = CLASS_NAME;
+
+    RegisterClass(&wc);
+
+     //Create the window.
+
+    HWND hwnd = CreateWindowEx(
+        0,
+        CLASS_NAME,
+        TEXT("Janela Windows"),
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, // x position
+        CW_USEDEFAULT, // y position
+        1000, // witdh
+        500, // height
+        NULL,
+        NULL,
+        hInstance,
+        NULL
+        );
+
+    if (hwnd == NULL)
+    {
+        return 0;
+    }
+
+    ShowWindow(hwnd, nCmdShow);
+
+     //Run the message loop.
+
+    MSG msg = { };
+
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return 0;
+}
+
+</pre>
+</body>
+</html>

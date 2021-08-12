@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:240px;padding:5px;">&nbsp;&nbsp;Comandos do Oracle</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=UGKDTnAMjh8" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+
+<h3>tamanho dos arquivos do oracle.</h3>
+
+select file_name,
+       tablespace_name,
+       status,
+       online_status,
+        maxbytes / 1024 Kb, maxbytes / 1024 / 1024 Mb, maxbytes / 1024 / 1024 / 1024 Gb
+from dba_data_files
+;
+
+<h3>quantidade de linhas da tabela</h3>
+
+select rownum, a.* 
+from meus_pais a
+where rownum &lt;= 2
+;
+
+...
+
+<h3>criar uma lista fixa</h3>
+
+SELECT column_value 
+FROM TABLE( SYS.DBMS_DEBUG_VC2COLL( 'Um', 'Dois', 'Tres', 'Quatro' ) )
+;
+
+select *
+from ( SELECT column_value 
+FROM TABLE( SYS.DBMS_DEBUG_VC2COLL( 'Um', 'Dois', 'Tres', 'Quatro' ) ) )
+where column_value = 'Dois'
+;
+
+<h3>ultimo commit de uma tabela</h3>
+
+SELECT scn_to_timestamp( max( ora_rowscn ) ) FROM meus_pais;
+
+<h3>ultimo dia do mss</h3>
+
+SELECT TRUNC (LAST_DAY (SYSDATE)) "ultimo dia do mes"
+    FROM DUAL;
+
+<h3>versao do Oracle</h3>
+
+SELECT * FROM v$version;
+
+<h3>configuracoes do oracle</h3>
+
+select res.*
+    from (
+      select *
+      from (
+        select
+          sys_context ('userenv','ACTION') ACTION,
+          sys_context ('userenv','AUDITED_CURSORID') AUDITED_CURSORID,
+          sys_context ('userenv','AUTHENTICATED_IDENTITY') AUTHENTICATED_IDENTITY,
+          sys_context ('userenv','AUTHENTICATION_DATA') AUTHENTICATION_DATA,
+          sys_context ('userenv','AUTHENTICATION_METHOD') AUTHENTICATION_METHOD,
+          sys_context ('userenv','BG_JOB_ID') BG_JOB_ID,
+          sys_context ('userenv','CLIENT_IDENTIFIER') CLIENT_IDENTIFIER,
+          sys_context ('userenv','CLIENT_INFO') CLIENT_INFO,
+          sys_context ('userenv','CURRENT_BIND') CURRENT_BIND,
+          sys_context ('userenv','CURRENT_EDITION_ID') CURRENT_EDITION_ID,
+          sys_context ('userenv','CURRENT_EDITION_NAME') CURRENT_EDITION_NAME,
+          sys_context ('userenv','CURRENT_SCHEMA') CURRENT_SCHEMA,
+          sys_context ('userenv','CURRENT_SCHEMAID') CURRENT_SCHEMAID,
+          sys_context ('userenv','CURRENT_SQL') CURRENT_SQL,
+          sys_context ('userenv','CURRENT_SQLn') CURRENT_SQLn,
+          sys_context ('userenv','CURRENT_SQL_LENGTH') CURRENT_SQL_LENGTH,
+          sys_context ('userenv','CURRENT_USER') CURRENT_USER,
+          sys_context ('userenv','CURRENT_USERID') CURRENT_USERID,
+          sys_context ('userenv','DATABASE_ROLE') DATABASE_ROLE,
+          sys_context ('userenv','DB_DOMAIN') DB_DOMAIN,
+          sys_context ('userenv','DB_NAME') DB_NAME,
+          sys_context ('userenv','DB_UNIQUE_NAME') DB_UNIQUE_NAME,
+          sys_context ('userenv','DBLINK_INFO') DBLINK_INFO,
+          sys_context ('userenv','ENTRYID') ENTRYID,
+          sys_context ('userenv','ENTERPRISE_IDENTITY') ENTERPRISE_IDENTITY,
+          sys_context ('userenv','FG_JOB_ID') FG_JOB_ID,
+          sys_context ('userenv','GLOBAL_CONTEXT_MEMORY') GLOBAL_CONTEXT_MEMORY,
+          sys_context ('userenv','GLOBAL_UID') GLOBAL_UID,
+          sys_context ('userenv','HOST') HOST,
+          sys_context ('userenv','IDENTIFICATION_TYPE') IDENTIFICATION_TYPE,
+          sys_context ('userenv','INSTANCE') INSTANCE,
+          sys_context ('userenv','INSTANCE_NAME') INSTANCE_NAME,
+          sys_context ('userenv','IP_ADDRESS') IP_ADDRESS,
+          sys_context ('userenv','ISDBA') ISDBA,
+          sys_context ('userenv','LANG') LANG,
+          sys_context ('userenv','LANGUAGE') LANGUAGE,
+          sys_context ('userenv','MODULE') MODULE,
+          sys_context ('userenv','NETWORK_PROTOCOL') NETWORK_PROTOCOL,
+          sys_context ('userenv','NLS_CALENDAR') NLS_CALENDAR,
+          sys_context ('userenv','NLS_CURRENCY') NLS_CURRENCY,
+          sys_context ('userenv','NLS_DATE_FORMAT') NLS_DATE_FORMAT,
+          sys_context ('userenv','NLS_DATE_LANGUAGE') NLS_DATE_LANGUAGE,
+          sys_context ('userenv','NLS_SORT') NLS_SORT,
+          sys_context ('userenv','NLS_TERRITORY') NLS_TERRITORY,
+          sys_context ('userenv','OS_USER') OS_USER,
+          sys_context ('userenv','POLICY_INVOKER') POLICY_INVOKER,
+          sys_context ('userenv','PROXY_ENTERPRISE_IDENTITY') PROXY_ENTERPRISE_IDENTITY,
+          sys_context ('userenv','PROXY_USER') PROXY_USER,
+          sys_context ('userenv','PROXY_USERID') PROXY_USERID,
+          sys_context ('userenv','SERVER_HOST') SERVER_HOST,
+          sys_context ('userenv','SERVICE_NAME') SERVICE_NAME,
+          sys_context ('userenv','SESSION_EDITION_ID') SESSION_EDITION_ID,
+          sys_context ('userenv','SESSION_EDITION_NAME') SESSION_EDITION_NAME,
+          sys_context ('userenv','SESSION_USER') SESSION_USER,
+          sys_context ('userenv','SESSION_USERID') SESSION_USERID,
+          sys_context ('userenv','SESSIONID') SESSIONID,
+          sys_context ('userenv','SID') SID,
+          sys_context ('userenv','STATEMENTID') STATEMENTID,
+          sys_context ('userenv','TERMINAL') TERMINAL
+        from dual
+        -- where sys_context ('userenv','SESSIONID') NOT in ('SYS', 'XDB')    -- &lt;&lt;&lt;&lt;&lt; filter by user
+      )
+      unpivot include nulls (
+        val for name in (action, audited_cursorid, authenticated_identity, authentication_data,
+        authentication_method, bg_job_id, client_identifier, client_info, current_bind, current_edition_id,
+        current_edition_name, current_schema, current_schemaid, current_sql, current_sqln, current_sql_length,
+        current_user, current_userid, database_role, db_domain, db_name, db_unique_name, dblink_info, entryid,
+        enterprise_identity, fg_job_id, global_context_memory, global_uid, host, identification_type, instance,
+        instance_name, ip_address, isdba, lang, language, module, network_protocol, nls_calendar, nls_currency,
+        nls_date_format, nls_date_language, nls_sort, nls_territory, os_user, policy_invoker,
+        proxy_enterprise_identity, proxy_user, proxy_userid, server_host, service_name, session_edition_id,
+        session_edition_name, session_user, session_userid, sessionid, sid, statementid, terminal)
+      )
+    ) res;
+	
+<h3>adicionar uma nova coluna</h3>
+
+create table tabela1 ( nome varchar2(50), sexo char);
+
+alter table tabela1 add idade number;
+
+<h3>formatacao valor para local</h3>
+
+select to_char( 1.23, '999d99' )
+from dual;
+
+select to_char( 1000.23, '9G999d99' )
+from dual;
+
+<h3>tabela de fontes</h3>
+
+SELECT *
+FROM SYS.all_source
+;
+
+<h3>configuracao do Oracle</h3>
+
+SELECT * FROM nls_database_parameters;
+
+<h3>diferença de dias entre duas datas</h3>
+
+select TO_DATE( '02022020', 'DDMMRRRR') - TO_DATE( '01012020', 'DDMMRRRR') 
+from dual;
+
+<h3>quantos dias faltam para o final do mes</h3>
+
+SELECT SYSDATE Hoje,
+       LAST_DAY (SYSDATE) Ultimo_Dia,
+       LAST_DAY (SYSDATE) - SYSDATE Dias_Faltando
+  FROM DUAL;
+  
+<h3>configuracao Oracle</h3>  
+
+SELECT * 
+  FROM v$parameter 
+
+<h3>usuarios conectados</h3>
+
+SELECT a.sid, 
+       a.serial#, 
+       a.status, 
+       sql.disk_reads, 
+       sql.direct_writes, 
+       a.username, 
+       a.machine, 
+       a.program,sql.sql_text
+  FROM v$session a, 
+       v$sql sql
+ WHERE sql.sql_id(+) = a.sql_id
+   AND a.type = 'USER'
+;  
+ 
+<h3>Renomear uma tabela.</h3>
+
+alter table tabela1 rename to nova_tabela;
+
+</pre>
+</body>
+</html>
