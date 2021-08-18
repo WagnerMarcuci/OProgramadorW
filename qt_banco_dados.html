@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:180px;padding:5px;">&nbsp;&nbsp;QSqlDatabase</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=_BhgBVbATOE" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+<h3>widget.h</h3>
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include &lt;QWidget&gt;
+#include &lt;QSqlDatabase&gt;
+#include "ui_widget.h"
+
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+    public:
+        Widget(QWidget *parent = nullptr);
+        ~Widget();
+        void iniciar( void );
+    
+    private:
+        Ui::Widget ui;
+        QSqlDatabase db;
+    
+    private slots:
+        void onIncluir( void );
+        void onLer( void );
+};
+#endif // WIDGET_H
+
+<h3>widget.cpp</h3>
+#include &lt;QFile&gt;
+#include &lt;QSqlRecord&gt;
+#include &lt;QSqlError&gt;
+#include &lt;QSqlQuery&gt;
+#include &lt;iostream&gt;
+#include "widget.h"
+
+Widget::Widget(QWidget *parent) : QWidget(parent)
+{
+    this-&gt;ui.setupUi(this);
+
+    connect( this-&gt;ui.incluir, SIGNAL( clicked() ), this, SLOT( onIncluir() ) );
+    connect( this-&gt;ui.ler, SIGNAL( clicked() ), this, SLOT( onLer() ) );
+}
+
+Widget::~Widget()
+{
+
+}
+
+void Widget::iniciar( void )
+{
+    this-&gt;db = QSqlDatabase::addDatabase( "QSQLITE" );
+
+    this-&gt;db.setDatabaseName( "banco.db" );
+
+    bool criar = QFile::exists( "banco.db" ) ? false : true;
+
+    if ( !this-&gt;db.open() )
+    {
+        std::cout &lt;&lt; "erro no arquivo." &lt;&lt; this-&gt;db.lastError().text().toStdString() &lt;&lt; std::endl;
+        return;
+    }
+
+    if ( criar )
+    {
+        QSqlQuery sql( this-&gt;db );
+
+        if ( !sql.exec( "create table pessoa( id INTEGER, nome TEXT, idade INTEGER )" ) )
+        {
+            std::cout &lt;&lt; "erro ao criar tabela: " &lt;&lt; sql.lastError().text().toStdString() &lt;&lt; std::endl;
+        }
+    }
+
+//    db.close();
+}
+
+void Widget::onIncluir( void )
+{
+    std::cout &lt;&lt; "incluir" &lt;&lt; std::endl;
+
+//    QString comando = "insert into pessoa values( ";
+//    comando += this-&gt;ui.id-&gt;text();
+//    comando += ",'";
+//    comando += this-&gt;ui.nome-&gt;text();
+//    comando += "',";
+//    comando += this-&gt;ui.idade-&gt;text();
+//    comando += ")";
+
+//    std::cout &lt;&lt; "comando: " &lt;&lt; comando.toStdString() &lt;&lt; std::endl;
+
+    QSqlQuery sql( this-&gt;db );
+
+    sql.prepare( "insert into pessoa values( :id, :nome, :idade )" );
+    sql.bindValue( ":idade", this-&gt;ui.idade-&gt;text() );
+    sql.bindValue( ":nome", this-&gt;ui.nome-&gt;text() );
+    sql.bindValue( ":id", this-&gt;ui.id-&gt;text() );
+
+    if ( !sql.exec() )
+    {
+        std::cout &lt;&lt; "erro ao incluir: " &lt;&lt; sql.lastError().text().toStdString() &lt;&lt; std::endl;
+        return;
+    }
+
+    this-&gt;ui.id-&gt;setText( "" );
+    this-&gt;ui.nome-&gt;setText( "" );
+    this-&gt;ui.idade-&gt;setText( "" );
+}
+
+void Widget::onLer( void )
+{
+    std::cout &lt;&lt; "ler" &lt;&lt; std::endl;
+
+    QSqlQuery sql( this-&gt;db );
+
+    sql.prepare( "select * from pessoa where id = :id" );
+    sql.bindValue( ":id", this-&gt;ui.id-&gt;text() );
+
+    if ( sql.exec() )
+    {
+        if ( sql.next() )
+        {
+            this-&gt;ui.id-&gt;setText( sql.record().value( "id" ).toString() );
+            this-&gt;ui.nome-&gt;setText( sql.record().value( "nome" ).toString() );
+            this-&gt;ui.idade-&gt;setText( sql.record().value( "idade" ).toString() );
+            return;
+        }
+    }
+
+    std::cout &lt;&lt; "erro:" &lt;&lt; sql.lastError().text().toStdString() &lt;&lt; std::endl;
+    std::cout &lt;&lt; "erro db :" &lt;&lt; this-&gt;db.lastError().text().toStdString() &lt;&lt; std::endl;
+}
+
+
+</pre>
+</body>
+</html>
