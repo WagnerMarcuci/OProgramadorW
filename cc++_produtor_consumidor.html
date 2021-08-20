@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:330px;padding:5px;">&nbsp;&nbsp;Rotina Produtor/Consumidor</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=N-3WNMAEeGs" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;pthread.h&gt;
+
+#define MAX 5
+#define MAX_STRING 100
+
+struct _buffer
+{
+    int flag;
+    char linha[ MAX_STRING + 1 ];
+} buffer[ MAX ];
+
+int encerrar_thread = 0;
+
+void * produtor( void * )
+{
+    char encerrar = 'N';
+    int pos = 0;
+    char temp[ MAX_STRING + 1 ];
+    FILE * entrada = fopen( "entrada.txt", "r" );
+
+    fgets( temp, sizeof( temp ), entrada );
+
+    while( encerrar != 'S' && encerrar_thread != 1 )
+    {
+        if ( strlen( temp ) == 0 || feof( entrada ) )
+        {
+            encerrar = 'S';
+            continue;
+        }
+
+        if ( buffer[ pos ].flag == 1 )
+        {
+            printf( "produtor aguardando...\n" );
+            _sleep( 100 );
+            continue;
+        }
+
+        memset( buffer[ pos ].linha, '\0', sizeof( buffer[ pos ].linha ) );
+        strncpy( buffer[ pos ].linha, temp, sizeof( buffer[ pos ].linha ) );
+        buffer[ pos ].flag = 1;
+
+        pos++;
+
+        if ( pos &gt;= MAX )
+        {
+            pos = 0;
+        }
+
+        printf( "pos: %d\n", pos );
+        fgets( temp, sizeof( temp ), entrada );
+    }
+
+    fclose( entrada );
+    _sleep( 3000 );
+    encerrar_thread = 1;
+    pthread_exit( 0 );
+}
+
+void * consumidor( void * )
+{
+    int pos = 0;
+
+    while( encerrar_thread != 1 )
+    {
+        if ( buffer[ pos ].flag == 0 )
+        {
+            printf( "consumidor aguardando...\n" );
+            _sleep( 100 );
+            continue;
+        }
+
+        printf( "consumidor %s\n", buffer[ pos ].linha );
+        buffer[ pos ].flag = 0;
+
+        pos++;
+
+        if ( pos &gt;= MAX )
+        {
+            pos = 0;
+        }
+    }
+
+    pthread_exit( 0 );
+}
+
+
+int main()
+{
+    pthread_t rotina[ 2 ] = { 0, 0 };
+
+    memset( &buffer, 0, sizeof( buffer ) );
+
+    pthread_create( &rotina[ 0 ], NULL, produtor, 0 );
+    pthread_create( &rotina[ 1 ], NULL, consumidor, 0 );
+
+    pthread_join( rotina[ 0 ], NULL );
+    pthread_join( rotina[ 1 ], NULL );
+
+    printf( "\n\n" );
+    return 0;
+
+}
+
+</pre>
+</body>
+</html>
