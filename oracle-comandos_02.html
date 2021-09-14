@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:240px;padding:5px;">&nbsp;&nbsp;Comandos do Oracle</h2>
+<br/>
+<a href="" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+SELECT regexp_substr( '1061|1062|1063|1000|1002|1023|1024|1027', '[^|]+', 1, 3 ) SPLIT
+  FROM dual
+;
+
+--
+-- indices de uma tabela
+--
+SELECT owner, index_name, uniqueness, distinct_keys, num_rows 
+  FROM sys.all_indexes
+  WHERE
+    table_name = UPPER('&Nome_Tabela')
+;
+
+--
+-- colunas do indice
+--
+SELECT index_name, table_owner, column_name, descend 
+  FROM sys.all_ind_columns
+  WHERE table_name = UPPER('&Nome_Tabela')
+  ORDER BY table_owner, index_name, column_position
+;
+
+--
+-- indices e colunas
+--
+SELECT a.table_owner, a.index_name, a.column_name, a.descend,
+       b.uniqueness, b.distinct_keys, b.num_rows
+  FROM sys.all_ind_columns a,
+       sys.all_indexes b
+  WHERE
+    a.table_name = UPPER('&Nome_Tabela') AND
+    b.table_name = a.table_name AND
+    a.index_name = b.index_name
+  ORDER BY a.table_owner, a.index_name, a.column_position
+;
+
+--
+-- Verificar Primary Key, Foreign Key habilitadas
+--
+SELECT a.constraint_name, 
+       CASE a.constraint_type
+         WHEN 'P' THEN 'Primary Key'
+         WHEN 'C' THEN 'Check'
+         WHEN 'V' THEN 'View'
+         WHEN 'R' THEN 'Reference'
+         WHEN 'U' THEN 'Unique'
+         WHEN 'O' THEN 'Read Only'
+       END as constraint_type,
+       a.status,
+       b.column_name, 
+       b.position as pos,
+       a.search_condition,
+       a.r_constraint_name
+  FROM SYS.all_constraints A,
+       SYS.all_cons_columns B
+ WHERE
+       a.table_name = UPPER('&Nome_Tabela') AND
+       a.constraint_name = b.constraint_name
+ ORDER BY 
+       a.constraint_name, b.position
+;
+
+--
+-- foreign keys
+--
+select 
+   cons.owner            as child_owner, 
+   cons.table_name       as child_table,
+   cons.constraint_name     constaint_name,
+   cons.constraint_type     constraint_type,
+   col.owner                parent_owner, 
+   col.table_name           parent_table,
+   col.column_name          column_name
+from
+
+      SYS.all_constraints cons,
+       SYS.all_cons_columns col
+where 
+   cons.r_owner = col.owner
+and 
+   cons.r_constraint_name = col.constraint_name
+and 
+   cons.table_name = UPPER('&Nome_Tabela')
+;   
+
+--
+-- objetos invalidos
+--
+select *
+  from dba_objects
+ where status='INVALID'
+;
+
+--
+-- alterar senha do usuario
+--
+ALTER USER <usuario> IDENTIFIED BY <senha>;
+
+
+--
+-- estrutura de uma tabela
+--
+SELECT column_name, data_type, data_length
+  FROM SYS.all_tab_columns
+ WHERE
+       table_name = UPPER('&Nome_Tabela')
+ ORDER BY column_id
+;
+
+--
+-- sessoes dos usuarios
+--
+SELECT sid, serial#, module, program, status, 
+      decode( machine, 'WAGNER-NB10', 'Wagner', 
+                       'CSFCPV\BRCSFWMTZ0292', 'Rodrigo', 
+                       'CSFCPV\RCSFMTZW0105', 'Fernando', 
+              machine) machine, 
+      TYPE, state, osuser, action
+  FROM SYS.v_$session
+  ORDER BY sid
+;
+
+--
+-- encerrar sessao
+--
+ALTER SYSTEM KILL SESSION '527, 61933';  --sid, serial#
+
+
+</pre>
+</body>
+</html>
