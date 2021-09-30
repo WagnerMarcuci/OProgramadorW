@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:150px;padding:5px;">&nbsp;&nbsp;Criptografia</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=YDDdAHt5wwQ" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+<h3>Cifra de Cesar</h3>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+#define ALFABETO "abcdefghijklmnopqrstuvwxyz "
+#define CONVERTE "01234567890!@#$%&*()_+-.;/,"
+
+char * criptografar( char * p_texto )
+{
+    char * temp = p_texto;
+    char * resultado = ( char *)malloc( sizeof( char ) * strlen( p_texto ) );
+
+    if ( !resultado )
+    {
+        printf( "erro de memoria" );
+        return NULL;
+    }
+
+    memset( resultado, '\0', sizeof( char ) * strlen( p_texto ) );
+
+    for( ; *temp; temp++ )
+    {
+        char * str_pos = strchr( ALFABETO, *temp );
+        int pos = str_pos - ALFABETO;
+        char temp[ 2 ] = { CONVERTE[ pos ], '\0' };
+        strncat( resultado, temp, 1 );
+    }
+
+    return resultado;
+}
+
+char * decritografar( char * p_texto )
+{
+    char * temp = p_texto;
+    char * resultado = ( char *)malloc( sizeof( char ) * strlen( p_texto ) );
+
+    if ( !resultado )
+    {
+        printf( "erro de memoria" );
+        return NULL;
+    }
+
+    memset( resultado, '\0', sizeof( char ) * strlen( p_texto ) );
+
+    for( ; *temp; temp++ )
+    {
+        char * str_pos = strchr( CONVERTE, *temp );
+        int pos = str_pos - CONVERTE;
+        char temp[ 2 ] = { ALFABETO[ pos ], '\0' };
+        strncat( resultado, temp, 1 );
+    }
+
+    return resultado;
+}
+
+
+int main()
+{
+
+    char * resultado = criptografar( "ola mundo" );
+    printf( "criptografado: %s\n", resultado );
+
+    printf( "decriptografado: %s\n", decritografar( resultado ) );
+
+
+    free( resultado );
+    printf( "\n\n" );
+    return 0;
+
+}
+<br/>
+<br/>
+<h3>SHA1</h3>
+#include &lt;windows.h&gt;
+#include &lt;wincrypt.h&gt;
+
+#define SHA1_HASH_LEN 20
+
+BOOL SHA1PasswordHash(LPCTSTR lpszPassword, LPTSTR lpszHash)
+{
+    HCRYPTPROV hCryptProv = 0;
+    HCRYPTHASH hCryptHash = 0;
+    BYTE       bHashValue[SHA1_HASH_LEN];
+    DWORD     dwSize   = SHA1_HASH_LEN, dwCount;
+    BOOL       bSuccess = FALSE;
+
+    if(CryptAcquireContext(&hCryptProv, NULL, 0, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT))
+    {
+        if(CryptCreateHash(hCryptProv, CALG_SHA1, 0, 0, &hCryptHash))
+        {
+            if(CryptHashData(hCryptHash, (PBYTE)lpszPassword, lstrlen(lpszPassword) * sizeof(TCHAR), 0))
+            {
+                if(CryptGetHashParam(hCryptHash, HP_HASHVAL, bHashValue, &dwSize, 0))
+                {
+                    for(dwCount = 0, *lpszHash = 0; dwCount &lt; SHA1_HASH_LEN; dwCount++)
+                    {
+                        wsprintf(
+                            lpszHash + (dwCount * 2),
+                            TEXT("%02x"),
+                            bHashValue[dwCount]
+                        );
+                    }
+                    bSuccess = TRUE;
+                }
+            }
+            CryptDestroyHash(hCryptHash);
+        }
+        CryptReleaseContext(hCryptProv, 0);
+    }
+
+    return bSuccess;
+}
+
+int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
+{
+    LPCTSTR lpszPassword = TEXT("Fazendo Teste");
+    LPTSTR  lpszHash     = (LPTSTR)LocalAlloc(LPTR, ((SHA1_HASH_LEN * 2) + 1) * sizeof(TCHAR));
+
+    if(!lpszHash)
+    {
+        MessageBox(NULL, TEXT("erro na memoria"), TEXT("Error!"), MB_OK | MB_ICONERROR);
+        return 0;
+    }
+
+    if(SHA1PasswordHash(lpszPassword, lpszHash))
+    {
+        MessageBox(NULL, lpszHash, TEXT("Feito"), MB_OK);
+    }
+    else
+    {
+        MessageBox(NULL, TEXT("erro no SHA1"), TEXT("Erro"), MB_OK | MB_ICONERROR);
+    }
+
+    LocalFree(lpszHash);
+    return 0;
+}
+
+</pre>
+</body>
+</html>
