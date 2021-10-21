@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:220px;padding:5px;">&nbsp;&nbsp;Windows Eventos</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=8JyRJl_4vA8" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;windows.h&gt;
+
+HANDLE evento = NULL;
+
+pthread_t thread[ 2 ] = { 0, 0 };
+
+void * funcao_01( void * )
+{
+    printf( "executando funcao 01 ...\n" );
+    WaitForSingleObject( evento, INFINITE );
+    printf( "recebido evento funcao 01...\n" );
+    WaitForSingleObject( evento, INFINITE );
+    printf( "recebido evento funcao 01...\n" );
+}
+
+void * funcao_02( void * )
+{
+    printf( "executando funcao 02 ...\n" );
+    WaitForSingleObject( evento, INFINITE );
+    printf( "recebido evento funcao 02...\n" );
+    WaitForSingleObject( evento, INFINITE );
+    printf( "recebido evento funcao 02...\n" );
+}
+
+int main( void )
+{
+    pthread_create( &thread[ 0 ], NULL, funcao_01, NULL );
+    pthread_create( &thread[ 1 ], NULL, funcao_02, NULL );
+
+    evento = CreateEventA( NULL, TRUE, FALSE, "Evento1" );
+
+    ResetEvent( evento );
+    Sleep( 5000 );
+
+    printf( "disparando \n" )    ;
+    SetEvent( evento );
+
+    ResetEvent( evento );
+    Sleep( 3000 );
+    printf( "disparando novamente\n" )    ;
+    SetEvent( evento );
+    Sleep( 1500 );
+
+    pthread_join( thread[ 0 ], NULL );
+    pthread_join( thread[ 1 ], NULL );
+
+    printf( "\n\n" );
+    return 0;
+}
+
+
+</pre>
+</body>
+</html>
