@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:260px;padding:5px;">&nbsp;&nbsp;Registro do Windows</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=gOwC8bZFvU0" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;iostream&gt;
+#include &lt;windows.h&gt;
+
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
+int main(int argc, char** argv)
+{
+    //
+    //  GRAVAR DADOS NO REGISTRO
+    //
+    HKEY hKey;
+    
+    const char * subkey = "Software\\Microsoft\\Windows\\CurrentVersion\\ThemeManager";
+    
+    if ( RegOpenKey( HKEY_CURRENT_USER, subkey, &hKey ) != ERROR_SUCCESS )
+    {
+        std::cout &lt;&lt; "Erro ao identifica chave" &lt;&lt; std::endl;
+        return 1;
+    }
+    
+    char valueBuffer[ 50 + 1 ] = "valor";
+    DWORD value_length = strlen( valueBuffer );
+    
+    if ( RegSetValueEx( hKey, "Entrada", 0 , REG_SZ, (LPBYTE)&valueBuffer, value_length ) != ERROR_SUCCESS )
+    {
+        std::cout &lt;&lt; "erro ao criar chave" &lt;&lt; std::endl;
+        return 1;
+    }
+
+
+    //
+    //  LER DADOS DO REGISTRO
+    //
+
+    HKEY hKey;
+
+    const char * subkey = "Software\\Microsoft\\Windows\\CurrentVersion\\ThemeManager";
+    DWORD dwType = REG_SZ;
+    DWORD value_length = 50;
+    char valueBuffer[ 50 + 1];
+
+    if ( RegOpenKey( HKEY_CURRENT_USER, subkey, &hKey ) != ERROR_SUCCESS )
+    {
+        std::cout &lt;&lt; "erro ao abria a chave " &lt;&lt; std::endl;
+        return 1;
+    }
+    
+    if ( RegQueryValueEx( hKey, "Entrada", 0, &dwType, (LPBYTE)&valueBuffer, &value_length ) != ERROR_SUCCESS )
+    {
+        std::cout &lt;&lt; "erro ao LER a chave " &lt;&lt; std::endl;
+        return 1;
+    }
+
+    std::cout &lt;&lt; "valor: " &lt;&lt; valueBuffer &lt;&lt; std::endl;
+
+    //
+    // CRIAR SUB DIRETORIO
+    //
+    HKEY hKey;
+    
+    const char * subkey = "Software\\Microsoft\\Windows\\CurrentVersion\\ThemeManager\\CONTEUDO";
+    
+    if ( RegOpenKey(
+       HKEY_CURRENT_USER,
+       subkey,
+       0,
+       NULL,
+       0,
+       KEY_ALL_ACCESS,
+       NULL,
+       &hKey,
+       NULL ) != ERROR_SUCCESS )
+    {
+        std::cout &lt;&lt; "Erro ao criar Entrada" &lt;&lt; std::endl;
+        return 1;
+    }
+    
+    char valueBuffer[ 50 + 1 ] = "valor2";
+    DWORD value_length = strlen( valueBuffer );
+    
+    if ( RegSetValueEx( hKey, "Entrada", 0 , REG_SZ, (LPBYTE)&valueBuffer, value_length ) != ERROR_SUCCESS )
+    {
+        std::cout &lt;&lt; "erro ao criar chave" &lt;&lt; std::endl;
+        return 1;
+    }
+
+    //
+    // ALTERAR CHAVE
+    //
+        HKEY hKey;
+    
+    const char * subkey = "Software\\Microsoft\\Windows\\CurrentVersion\\ThemeManager\\CONTEUDO";
+    
+    if ( RegOpenKey(HKEY_CURRENT_USER, subkey,&hKey ) != ERROR_SUCCESS )
+    {
+        std::cout &lt;&lt; "Erro ao acessar a chave" &lt;&lt; std::endl;
+        return 1;
+    }
+    
+    char valueBuffer[ 50 + 1 ] = "...valor2...";
+    DWORD value_length = strlen( valueBuffer );
+    
+    if ( RegSetValueEx( hKey, "Entrada", 0 , REG_SZ, (LPBYTE)&valueBuffer, value_length ) != ERROR_SUCCESS )
+    {
+        std::cout &lt;&lt; "erro ao criar chave" &lt;&lt; std::endl;
+        return 1;
+    }
+
+    //
+    // APAGAR SUBDIRETORIO
+    //
+        HKEY hKey;
+    
+    const char * subkey = "Software\\Microsoft\\Windows\\CurrentVersion\\ThemeManager\\CONTEUDO";
+    
+    if ( RegOpenKey(HKEY_CURRENT_USER, subkey,&hKey ) != ERROR_SUCCESS )
+    {
+        std::cout &lt;&lt; "Erro ao acessar a chave" &lt;&lt; std::endl;
+        return 1;
+    }
+
+
+    if ( RegDeleteKey( HKEY_CURRENT_USER, subkey ) != ERROR_SUCCESS )
+    {
+        std::cout &lt;&lt; "erro ao apagar chave" &lt;&lt; std::endl;
+        return 1;
+    }
+
+    RegCloseKey( hKey );
+
+    
+	return 0;
+}
+
+
+
+
+</pre>
+</body>
+</html>
