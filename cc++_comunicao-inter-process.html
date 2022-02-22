@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:370px;padding:5px;">&nbsp;&nbsp;IPC - Conexão entre programas</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=rNg0QUZANrw" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+<h3>Servidor</h3>
+#include &lt;iostream&gt;
+#include &lt;windows.h&gt;
+#include &lt;stdio.h&gt;
+
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
+int main(int argc, char** argv)
+{
+    HANDLE hPipe;
+    char buffer[ 1024 ];
+    DWORD dwRead;
+    char continuar = 's';
+
+    hPipe = CreateNamedPipe( TEXT( "\\\\.\\pipe\\Pipe"),
+                             PIPE_ACCESS_DUPLEX,
+                             PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT,
+                             1,
+                             1024 * 16,
+                             1024 * 16,
+                             NMPWAIT_USE_DEFAULT_WAIT,
+                             NULL    );
+
+    if ( hPipe == INVALID_HANDLE_VALUE )
+    {
+        printf( "erro ao criar pipe\n" );
+        continuar = 'n';
+    }
+    
+    while( continuar == 's' )
+    {
+        if ( ConnectNamedPipe( hPipe, NULL ) != FALSE )
+        {
+            while( ReadFile( hPipe, buffer, sizeof(buffer) - 1, &dwRead, NULL ) != FALSE )
+            {
+                buffer[ dwRead ] = '\0';
+                printf( "%s", buffer );
+                
+                if ( strcmp( buffer, "fim") == 0 )
+                {
+                    continuar = 'n';
+                    break;
+                }
+            }
+        }
+        else
+        {
+            continuar = 'n';
+            printf( "erro ao conectar\n" );
+        }
+        
+        DisconnectNamedPipe( hPipe );
+    }
+                             
+	return 0;
+}
+<br/>
+<br/>
+<h3>Cliente</h3>
+#include &lt;iostream&gt;
+#include &lt;windows.h&gt;
+#include &lt;stdio.h&gt;
+
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
+int main(int argc, char** argv)
+{
+    HANDLE hPipe;
+    DWORD dwWritten;
+    
+    hPipe = CreateFile( TEXT( "\\\\.\\pipe\\Pipe" ),
+                        GENERIC_READ | GENERIC_WRITE,
+                        0,
+                        NULL,
+                        OPEN_EXISTING,
+                        0,
+                        NULL   );
+
+    if ( hPipe != INVALID_HANDLE_VALUE )
+    {
+        WriteFile( hPipe,
+                   "Hello Pipe\n",
+                   12,
+                   &dwWritten,
+                   NULL );
+    }
+    
+    Sleep( 5000 );
+    printf( "encerrando\n" );
+    
+    WriteFile( hPipe,
+               "fim\0",
+               4,
+               &dwWritten,
+               NULL );
+               
+    CloseHandle( hPipe );
+
+	return 0;
+}
+
+
+</pre>
+</body>
+</html>
