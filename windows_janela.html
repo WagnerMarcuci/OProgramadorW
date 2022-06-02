@@ -14,26 +14,28 @@ style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Cana
 <pre>
 #include &lt;windows.h&gt;
 #include &lt;stdio.h&gt;
+#include &lt;tchar.h&gt;
+
+HINSTANCE g_instance = 0;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
-
         case WM_SETFOCUS:
            printf( "WM_SETFOCUS\n" );
            return 0;
-           
+
         case WM_ACTIVATE:
            printf( "WM_ACTIVATE\n" );
            return 0;
 
         case WM_CREATE:
-           printf( "WM_CREATE\n" );
-           return 0;
+            printf( "WM_LBUTTONUP \n" );
+            return 0;
 
         case WM_SIZE:
-            printf( "WM_SIZE x: %d y: %d\n", LOWORD( lParam ), HIWORD( lParam ) );
+            printf( "WM_SIZE\n" );
             return 0;
 
         case WM_MOVE:
@@ -58,6 +60,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
         case WM_PAINT:
 //            printf( "WM_PAINT\n" );
+            {
+                PAINTSTRUCT ps;
+                BeginPaint( hwnd, &ps );
+                FillRect( GetDC( hwnd ), &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+1));
+                EndPaint( hwnd, &ps );
+            }
             return 0;
 
         case WM_DESTROY:
