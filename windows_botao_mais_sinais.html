@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:190px;padding:5px;">&nbsp;&nbsp;Windows Bot&atilde;o</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=KIAb3L4Biho"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;windows.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;tchar.h&gt;
+
+HWND g_button = NULL;
+HINSTANCE g_instance = 0;
+
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+
+        case WM_SETFOCUS:
+           printf( "WM_SETFOCUS\n" );
+           return 0;
+
+        case WM_ACTIVATE:
+           printf( "WM_ACTIVATE\n" );
+           return 0;
+
+		case WM_CREATE:
+			printf( "WM_LBUTTONUP \n" );
+
+		   if ( g_button == NULL )
+		   {
+			   g_button = CreateWindow (
+				   TEXT("BUTTON"),                         // The class name required
+				   TEXT("Botão"),                     // the caption of the label
+				   WS_CHILD | WS_VISIBLE | BS_NOTIFY,  // the styles
+				   100, // the left co-ordinates x
+				   50,  // the top co-ordinates y
+				   80,  // width
+				   25,  // height
+				   hwnd, // parent window handle hwnd
+				   ( HMENU )NULL, // the ID of your button
+				   g_instance, // the instance of your application
+				   NULL)  // extrabits you dont really need
+			   ;
+		   }
+
+		return 0;
+
+        case WM_SIZE:
+            printf( "WM_SIZE x: %d y: %d\n", LOWORD( lParam ), HIWORD( lParam ) );
+            return 0;
+
+        case WM_MOVE:
+            printf( "WM_MOVE\n" );
+            return 0;
+
+        case WM_LBUTTONDOWN:
+           printf( "WM_LBUTTONDOWN\n" );
+//           SendMessageA( g_button, BM_SETSTYLE, (WPARAM)BS_CHECKBOX, (LPARAM)TRUE );
+//           SendMessageA( g_button, BM_SETSTYLE, (WPARAM)BS_AUTORADIOBUTTON, (LPARAM)TRUE );
+//           SendMessageA( g_button, BM_SETSTATE, (WPARAM)TRUE, (LPARAM)0 );
+//            {
+//                int i = SendMessageA( g_button, BM_GETSTATE, (WPARAM)0, (LPARAM)0 );
+//                printf( "%d\n", i );
+//            }
+
+//           SendMessageA( g_button, BM_SETSTYLE, (WPARAM)BS_CHECKBOX, (LPARAM)TRUE );
+//           SendMessageA( g_button, BM_SETCHECK, (WPARAM)BST_CHECKED, (LPARAM)0 );
+
+//            {
+//                int i = SendMessageA( g_button, BM_GETCHECK, (WPARAM)0, (LPARAM)0 );
+//                printf( "%d\n", i );
+
+//            }
+           SendMessageA( g_button, BM_CLICK, (WPARAM)0, (LPARAM)0 );
+        return 0;
+
+        case WM_LBUTTONUP:
+           printf( "WM_LBUTTONUP\n" );
+           return 0;
+
+        case WM_RBUTTONDOWN:
+           printf( "WM_RBUTTONDOWN\n" );
+           return 0;
+
+        case WM_RBUTTONUP:
+           printf( "WM_RBUTTONUP\n" );
+           return 0;
+
+        case WM_PAINT:
+        {
+            printf( "WM_PAINT \n" );
+
+            PAINTSTRUCT ps;
+            BeginPaint( hwnd, &ps );
+            EndPaint( hwnd, &ps );
+            return 0;
+        }
+
+        case WM_DESTROY:
+            printf( "WM_DESTROY\n" );
+            PostQuitMessage(0);
+            return 0;
+    }
+
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
+
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
+{
+    const char * CLASS_NAME  = TEXT("CLASSE_WINDOWS");
+
+    WNDCLASS wc = { };
+
+    wc.lpfnWndProc   = WindowProc;
+    wc.hInstance     = hInstance;
+    wc.lpszClassName = CLASS_NAME;
+
+    RegisterClass(&wc);
+
+    // Create the window.
+
+    HWND hwnd = CreateWindowEx(
+        0,                              // Optional window styles.
+        CLASS_NAME,                     // Window class
+        TEXT("Janela Windows"),    // Window text
+        WS_OVERLAPPEDWINDOW,            // Window style
+
+        // Size and position
+        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+        NULL,       // Parent window
+        NULL,       // Menu
+        hInstance,  // Instance handle
+        NULL        // Additional application data
+        );
+
+    if (hwnd == NULL)
+    {
+        return 0;
+    }
+
+    ShowWindow(hwnd, nCmdShow);
+
+    // Run the message loop.
+
+    MSG msg = { };
+
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return 0;
+}
+
+</pre>
+</body>
+</html>
