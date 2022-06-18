@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:260px;padding:5px;">&nbsp;&nbsp;Windows Criar Menu</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=xdwNLXoMax0" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+<h3>menu.h</h3>
+#ifndef MENU_H
+#define MENU_H
+#include &lt;windows.h&gt;
+
+#define ID_OPCAO1 101
+#define ID_OPCAO2 102
+
+HMENU criar_menu( void );
+
+#endif
+
+<h3>menu.c</h3>
+
+#include "menu.h"
+
+HMENU criar_menu( void )
+{
+    HMENU h_menu = CreateMenu();
+    HMENU h_menupopup = CreatePopupMenu();
+    
+    AppendMenu( h_menupopup, MF_ENABLED | MF_STRING | MF_GRAYED , ID_OPCAO1, "Opcao 1");
+    AppendMenu( h_menupopup, MF_SEPARATOR          , 0        , "");
+    AppendMenu( h_menupopup, MF_ENABLED | MF_STRING | MF_CHECKED, ID_OPCAO2, "Opcao 2");
+    
+    HBITMAP h_bmp = (HBITMAP)LoadImageA( 0, "imagem.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE );
+    HBITMAP h_bmp_sel = (HBITMAP)LoadImageA( 0, "imagem_sel.bmp", IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE );
+
+    if ( !h_bmp || !h_bmp_sel)
+    {
+        MessageBox( 0, "ERRO", "BMP", MB_ICONINFORMATION );
+    }
+    
+    SetMenuItemBitmaps( h_menupopup, 0, MF_BYPOSITION, h_bmp, h_bmp_sel );
+    
+    AppendMenu( h_menu, MF_ENABLED | MF_POPUP, (UINT)h_menupopup, "Arquivo" );
+
+
+    return h_menu;
+}
+
+<h3>main.c</h3>
+
+#include &lt;windows.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;tchar.h&gt;
+#include "menu.h"
+
+HINSTANCE g_instance = 0;
+
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+        case WM_SETFOCUS:
+            printf( "WM_SETFOCUS \n" );
+            break;
+
+        case WM_ACTIVATE:
+            printf( "WM_ACTIVATE \n" );
+            break;
+
+        case WM_CREATE:
+            printf( "WM_CREATE \n" );
+            break;
+
+        case WM_SIZE:
+            printf( "WM_SIZE \n" );
+            break;
+
+        case WM_MOVE:
+    //        printf( "WM_MOVE \n" );
+            break;
+
+        case WM_LBUTTONDOWN:
+            printf( "WM_LBUTTONDOWN \n" );
+            break;
+
+        case WM_LBUTTONUP:
+            printf( "WM_LBUTTONUP \n" );
+            break;
+
+        case WM_COMMAND:
+            if ( LOWORD( wParam ) == ID_OPCAO1 )
+            {
+                MessageBox( 0, "cliando", "opcao 1", MB_ICONINFORMATION );
+                CheckMenuItem( GetMenu( hwnd ), ID_OPCAO1, MF_CHECKED );
+//                EnableMenuItem( GetMenu( hwnd ), ID_OPCAO1, MF_GRAYED );
+            }
+            if ( LOWORD( wParam ) == ID_OPCAO2 )
+            {
+                MessageBox( 0, "cliando", "opcao 2", MB_ICONINFORMATION );
+                CheckMenuItem( GetMenu( hwnd ), ID_OPCAO2, MF_UNCHECKED );
+                EnableMenuItem( GetMenu( hwnd ), ID_OPCAO1, MF_ENABLED );
+            }
+            break;
+
+        case WM_RBUTTONDOWN:
+            printf( "WM_RBUTTONDOWN \n" );
+            break;
+
+        case WM_RBUTTONUP:
+            printf( "WM_RBUTTONUP \n" );
+            break;
+
+        case WM_PAINT:
+            {
+                printf( "WM_PAINT \n" );
+
+                PAINTSTRUCT ps;
+                BeginPaint( hwnd, &ps );
+                EndPaint( hwnd, &ps );
+                return 0;
+            }
+
+        case WM_DESTROY:
+            printf( "WM_DESTROY \n" );
+            PostQuitMessage(0);
+            return 0;
+    }
+
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
+
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
+{
+    const char * CLASS_NAME  = TEXT("CLASSE_WINDOWS");
+    g_instance = hInstance;
+
+    WNDCLASS wc = { };
+
+    wc.lpfnWndProc   = WindowProc;
+    wc.hInstance     = hInstance;
+    wc.lpszClassName = CLASS_NAME;
+
+    RegisterClass(&wc);
+
+     //Create the window.
+     
+     HMENU menu = criar_menu();
+
+     if ( !menu )
+     {
+         printf( "erro ao criar menu...\n" );
+         menu = NULL;
+     }
+     
+    HWND hwnd = CreateWindowEx(
+        0,
+        CLASS_NAME,
+        TEXT("Janela Windows"),
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, // x position
+        CW_USEDEFAULT, // y position
+        1000, // witdh
+        500, // height
+        NULL,
+        menu,
+        hInstance,
+        NULL
+        );
+
+    if (hwnd == NULL)
+    {
+        return 0;
+    }
+
+    ShowWindow(hwnd, nCmdShow);
+
+     //Run the message loop.
+
+    MSG msg = { };
+
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return 0;
+}
+
+
+
+
+</pre>
+</body>
+</html>
