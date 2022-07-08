@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:150px;padding:5px;">&nbsp;&nbsp;SystemTray</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=gfNwCrmHVWE" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+<h3>main.cpp</h3>
+
+#if defined(UNICODE) && !defined(_UNICODE)
+    #define _UNICODE
+#elif defined(_UNICODE) && !defined(UNICODE)
+    #define UNICODE
+#endif
+
+#include &lt;tchar.h&gt;
+#include &lt;windows.h&gt;
+#include &lt;stdio.h&gt;
+
+
+#include "listview.h"
+HINSTANCE g_instance;
+HWND g_listview = NULL;
+
+
+/*  Declare Windows procedure  */
+LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
+
+/*  Make the class name into a global variable  */
+TCHAR szClassName[ ] = _T("CodeBlocksWindowsApp");
+
+int WINAPI WinMain (HINSTANCE hThisInstance,
+                     HINSTANCE hPrevInstance,
+                     LPSTR lpszArgument,
+                     int nCmdShow)
+{
+    HWND hwnd;               /* This is the handle for our window */
+    MSG messages;            /* Here messages to the application are saved */
+    WNDCLASSEX wincl;        /* Data structure for the windowclass */
+
+    g_instance = hThisInstance;
+
+    /* The Window structure */
+    wincl.hInstance = hThisInstance;
+    wincl.lpszClassName = szClassName;
+    wincl.lpfnWndProc = WindowProcedure;      /* This function is called by windows */
+    wincl.style = CS_DBLCLKS;                 /* Catch double-clicks */
+    wincl.cbSize = sizeof (WNDCLASSEX);
+
+    /* Use default icon and mouse-pointer */
+    wincl.hIcon = LoadIcon (NULL, IDI_APPLICATION);
+    wincl.hIconSm = LoadIcon (NULL, IDI_APPLICATION);
+    wincl.hCursor = LoadCursor (NULL, IDC_ARROW);
+    wincl.lpszMenuName = NULL;                 /* No menu */
+    wincl.cbClsExtra = 0;                      /* No extra bytes after the window class */
+    wincl.cbWndExtra = 0;                      /* structure or the window instance */
+    /* Use Windows's default colour as the background of the window */
+    wincl.hbrBackground = (HBRUSH) COLOR_BACKGROUND;
+
+    /* Register the window class, and if it fails quit the program */
+    if (!RegisterClassEx (&wincl))
+        return 0;
+
+    /* The class is registered, let's create the program*/
+    hwnd = CreateWindowEx (
+           0,                   /* Extended possibilites for variation */
+           szClassName,         /* Classname */
+           _T("Code::Blocks Template Windows App"),       /* Title Text */
+           WS_OVERLAPPEDWINDOW, /* default window */
+           CW_USEDEFAULT,       /* Windows decides the position */
+           CW_USEDEFAULT,       /* where the window ends up on the screen */
+           544,                 /* The programs width */
+           375,                 /* and height in pixels */
+           HWND_DESKTOP,        /* The window is a child-window to desktop */
+           NULL,                /* No menu */
+           hThisInstance,       /* Program Instance handler */
+           NULL                 /* No Window Creation data */
+           );
+
+    /* Make the window visible on the screen */
+    ShowWindow (hwnd, nCmdShow);
+
+    /* Run the message loop. It will run until GetMessage() returns 0 */
+    while (GetMessage (&messages, NULL, 0, 0))
+    {
+        /* Translate virtual-key messages into character messages */
+        TranslateMessage(&messages);
+        /* Send message to WindowProcedure */
+        DispatchMessage(&messages);
+    }
+
+    /* The program return-value is 0 - The value that PostQuitMessage() gave */
+    return messages.wParam;
+}
+
+
+/*  This function is called by the Windows function DispatchMessage()  */
+
+LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+
+
+    switch (message)                  /* handle the messages */
+    {
+        case WM_DESTROY:
+            PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
+            break;
+
+        case WM_LBUTTONDOWN:
+            g_listview = criar_listview( g_instance, hwnd );
+
+            criar_header( "col 1", 100, 'c' );
+            criar_header( "col 2", 80, 'd' );
+            criar_header( "col 3", 120, 'e' );
+
+            inserir_dados( 0, 0, "descricao 0" );
+            inserir_dados( 0, 1, "descricao 1" );
+            inserir_dados( 0, 2, "descricao 2" );
+//            inserir_dados( 0, 3, "descricao 3" );
+            atualizar_dados( 0, 1, "XXXXXXXXX" );
+
+            break;
+
+        default:                      /* for messages that we don't deal with */
+            return DefWindowProc (hwnd, message, wParam, lParam);
+    }
+
+    return 0;
+}
+
+<h3>listview.h</h3>
+
+#ifndef __LISTVIEW_H__
+#define __LISTVIEW_H__
+
+#include &lt;windows.h&gt;
+#include &lt;commctrl.h&gt;
+
+HWND criar_listview( HINSTANCE, HWND );
+
+/**
+    @brief criar header do listview
+    @param label
+    @param tamanho
+    @param alinhamento c-centro, d-direita, e-esquerda
+    @return TRUE - ok, FALSE - err
+*/
+BOOL criar_header( char *, int, char );
+
+/**
+    @brief inserir dados na coluna
+    @param linha
+    @param coluna
+    @param descricao
+    @return TRUE - ok, FALSE - err
+*/
+BOOL inserir_dados( int, int, char * );
+
+/**
+    @brief atualizar dados na coluna
+    @param linha
+    @param coluna
+    @param descricao
+    @return TRUE - ok, FALSE - err
+*/
+BOOL atualizar_dados( int, int, char * );
+
+#endif //
+
+
+<h3>listview.cpp</h3>
+
+#include &lt;stdio.h&gt;
+#include "listview.h"
+
+static HWND handle_listview = NULL;
+static int posicao = 0;
+static int header = 0;
+static int item = -1;
+
+HWND criar_listview( HINSTANCE p_instance, HWND p_HWND )
+{
+    INITCOMMONCONTROLSEX InitCC;
+   	InitCC.dwSize   = sizeof(INITCOMMONCONTROLSEX);
+	InitCC.dwICC    = ICC_LISTVIEW_CLASSES | 0;
+
+    if( !InitCommonControlsEx(&InitCC) )
+	{
+        MessageBox(NULL, "Erro na inicializacao de componente.", "InitCommonControlsEx", MB_ICONSTOP);
+        return NULL;
+	}
+
+    handle_listview = CreateWindow (
+           WC_LISTVIEW,       /* Classname */
+           "",              /* Title Text */
+           WS_CHILD | LVS_REPORT | WS_VISIBLE | LVS_EDITLABELS,
+           10,       /* Windows decides the position */
+           10,       /* where the window ends up on the screen */
+           400,                 /* The programs width */
+           300,                 /* and height in pixels */
+           p_HWND,        /* The window is a child-window to desktop */
+           NULL,                /* No menu */
+           p_instance,       /* Program Instance handler */
+           NULL                 /* No Window Creation data */
+           );
+
+    return handle_listview;
+}
+
+BOOL criar_header( char * p_label, int p_tamanho, char p_alinhamento )
+{
+    LVCOLUMN lvCol;
+    char buffer[ MAX_PATH - 1 ];
+
+    ZeroMemory( &lvCol, sizeof( lvCol ) );
+    ZeroMemory( &buffer, sizeof( buffer ) );
+    strncpy( buffer, p_label, sizeof( p_label ) );
+
+    // apagar lista
+    ListView_DeleteAllItems( handle_listview );
+
+    // configurar estilo da lista
+    ListView_SetExtendedListViewStyle( handle_listview,
+        LVS_EX_FULLROWSELECT | LVS_EX_SUBITEMIMAGES | LVS_EX_GRIDLINES );
+
+    // mascara para texto, tamanho e formatacao
+    lvCol.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_FMT;
+
+	switch( p_alinhamento )
+	{
+		case 'c': lvCol.fmt = LVCFMT_CENTER; break;
+		case 'd': lvCol.fmt = LVCFMT_RIGHT;  break;
+		case 'e': lvCol.fmt = LVCFMT_LEFT;   break;
+	}
+
+	lvCol.pszText = p_label;
+	lvCol.cx = p_tamanho;
+	lvCol.cchTextMax = (int)strlen( buffer );
+
+	BOOL rc = ListView_InsertColumn( handle_listview, header++, &lvCol );
+
+    return TRUE;
+}
+
+BOOL inserir_dados( int p_lin, int p_col, char * p_descricao )
+{
+    LVITEM lvItem;
+
+    ZeroMemory( &lvItem, sizeof( lvItem ) );
+
+    lvItem.mask = LVIF_TEXT | LVIF_IMAGE |LVIF_STATE;
+	lvItem.pszText = p_descricao;
+	lvItem.cchTextMax = (int)strlen( p_descricao );
+	lvItem.iItem = p_lin;
+	lvItem.iImage = 0;
+	lvItem.iSubItem = 0;
+	lvItem.state = 0;
+	lvItem.stateMask = LVIS_SELECTED;
+	lvItem.iIndent = 0;
+	lvItem.lParam = 0;
+
+	if ( item &lt; p_lin )
+    {
+        ListView_InsertItem( handle_listview, &lvItem );
+        item = p_lin;
+    }
+
+    ListView_SetItemText( handle_listview, p_lin, p_col, p_descricao );
+
+    return TRUE;
+}
+
+BOOL atualizar_dados( int p_lin, int p_col, char * p_descricao )
+{
+    ListView_SetItemText( handle_listview, p_lin, p_col, p_descricao );
+}
+
+</pre>
+</body>
+</html>
