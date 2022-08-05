@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:100px;padding:5px;">&nbsp;&nbsp;Tab Control</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=rut2oQsKHpk" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+LIBS += -lcomctl32
+
+<h3>main.cpp</h3>
+#if defined(UNICODE) && !defined(_UNICODE)
+    #define _UNICODE
+#elif defined(_UNICODE) && !defined(UNICODE)
+    #define UNICODE
+#endif
+
+#include &lt;tchar.h&gt;
+#include &lt;windows.h&gt;
+#include &lt;stdio.h&gt;
+#include "tab.h"
+
+HINSTANCE g_instance;
+HWND tab_control = NULL;
+
+/*  Declare Windows procedure  */
+LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
+
+/*  Make the class name into a global variable  */
+TCHAR szClassName[ ] = _T("CodeBlocksWindowsApp");
+
+int WINAPI WinMain (HINSTANCE hThisInstance,
+                     HINSTANCE hPrevInstance,
+                     LPSTR lpszArgument,
+                     int nCmdShow)
+{
+    HWND hwnd;               /* This is the handle for our window */
+    MSG messages;            /* Here messages to the application are saved */
+    WNDCLASSEX wincl;        /* Data structure for the windowclass */
+
+    g_instance = hThisInstance;
+
+    /* The Window structure */
+    wincl.hInstance = hThisInstance;
+    wincl.lpszClassName = szClassName;
+    wincl.lpfnWndProc = WindowProcedure;      /* This function is called by windows */
+    wincl.style = CS_DBLCLKS;                 /* Catch double-clicks */
+    wincl.cbSize = sizeof (WNDCLASSEX);
+
+    /* Use default icon and mouse-pointer */
+    wincl.hIcon = LoadIcon (NULL, IDI_APPLICATION);
+    wincl.hIconSm = LoadIcon (NULL, IDI_APPLICATION);
+    wincl.hCursor = LoadCursor (NULL, IDC_ARROW);
+    wincl.lpszMenuName = NULL;                 /* No menu */
+    wincl.cbClsExtra = 0;                      /* No extra bytes after the window class */
+    wincl.cbWndExtra = 0;                      /* structure or the window instance */
+    /* Use Windows's default colour as the background of the window */
+    wincl.hbrBackground = (HBRUSH) COLOR_BACKGROUND;
+
+    /* Register the window class, and if it fails quit the program */
+    if (!RegisterClassEx (&wincl))
+        return 0;
+
+    /* The class is registered, let's create the program*/
+    hwnd = CreateWindowEx (
+           0,                   /* Extended possibilites for variation */
+           szClassName,         /* Classname */
+           _T("Code::Blocks Template Windows App"),       /* Title Text */
+           WS_OVERLAPPEDWINDOW, /* default window */
+           CW_USEDEFAULT,       /* Windows decides the position */
+           CW_USEDEFAULT,       /* where the window ends up on the screen */
+           544,                 /* The programs width */
+           375,                 /* and height in pixels */
+           HWND_DESKTOP,        /* The window is a child-window to desktop */
+           NULL,                /* No menu */
+           hThisInstance,       /* Program Instance handler */
+           NULL                 /* No Window Creation data */
+           );
+
+    /* Make the window visible on the screen */
+    ShowWindow (hwnd, nCmdShow);
+
+    /* Run the message loop. It will run until GetMessage() returns 0 */
+    while (GetMessage (&messages, NULL, 0, 0))
+    {
+        /* Translate virtual-key messages into character messages */
+        TranslateMessage(&messages);
+        /* Send message to WindowProcedure */
+        DispatchMessage(&messages);
+    }
+
+    /* The program return-value is 0 - The value that PostQuitMessage() gave */
+    return messages.wParam;
+}
+
+
+/*  This function is called by the Windows function DispatchMessage()  */
+
+LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    switch (message)                  /* handle the messages */
+    {
+        case WM_DESTROY:
+            PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
+            break;
+
+        case WM_LBUTTONDOWN:
+            tab_control = criar_tabcontrol( g_instance, hwnd );
+            insert_tab( 10 );
+            insert_tab( 1 );
+
+            CreateWindow( WC_STATIC, "Label",
+                         WS_CHILD | WS_VISIBLE | WS_BORDER,
+                         0, 30,
+                         100, 20,
+                         tab_control,
+                         NULL, g_instance, NULL );
+            break;
+
+        case WM_NOTIFY:
+            {
+                LPNMHDR param = ( LPNMHDR )lParam;
+
+                if ( param-&gt;code == TCN_SELCHANGE )
+                {
+                    printf( "TCN_SELCHANGE\n" );
+                }
+
+                if ( param-&gt;code == TCN_SELCHANGING )
+                {
+                    printf( "TCN_SELCHANGING\n" );
+                }
+            }
+            break;
+        default:                      /* for messages that we don't deal with */
+            return DefWindowProc (hwnd, message, wParam, lParam);
+    }
+
+    return 0;
+}
+
+<h3>tab.h</h3>
+#ifndef TAB_H_INCLUDED
+#define TAB_H_INCLUDED
+
+#include &lt;windows.h&gt;
+#include &lt;commctrl.h&gt;
+
+/**
+    @brief criar janela tab control
+    @param instancia do programa
+    @param handle da janela pai
+    @return handle da janela
+*/
+HWND criar_tabcontrol( HINSTANCE, HWND );
+
+/**
+    @brief inserir uma aba
+    @param numero da aba
+    @return
+*/
+void insert_tab( int );
+
+#endif // TAB_H_INCLUDED
+
+
+<h3>tab.cpp</h3>
+#include &lt;stdio.h&gt;
+#include "tab.h"
+
+static HWND hTabControl = NULL;
+static TCITEM item;
+
+HWND criar_tabcontrol( HINSTANCE g_instance, HWND g_HWND )
+{
+    INITCOMMONCONTROLSEX InitCC;
+   	InitCC.dwSize   = sizeof(INITCOMMONCONTROLSEX);
+	InitCC.dwICC    = ICC_TAB_CLASSES | 0;
+
+    if( !InitCommonControlsEx(&InitCC) )
+	{
+        MessageBox(NULL, "Erro na inicializacao de componente.", "InitCommonControlsEx", MB_ICONSTOP);
+        return NULL;
+	}
+
+    hTabControl = CreateWindow (
+           WC_TABCONTROL,       /* Classname */
+           "",              /* Title Text */
+            WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE,
+           10,       /* Windows decides the position */
+           10,       /* where the window ends up on the screen */
+           300,                 /* The programs width */
+           200,                 /* and height in pixels */
+           g_HWND,        /* The window is a child-window to desktop */
+           NULL,                /* No menu */
+           g_instance,       /* Program Instance handler */
+           NULL                 /* No Window Creation data */
+           );
+
+   return hTabControl;
+}
+
+void insert_tab( int p_aba )
+{
+    TCHAR aba[ 10 + 1 ];
+    snprintf( aba, sizeof( aba ) - 1, "ABA %d", p_aba );
+
+    item.mask = TCIF_TEXT;
+    item.pszText = (LPSTR)aba;
+
+    TabCtrl_InsertItem( hTabControl, p_aba, &item );
+}
+
+
+</pre>
+</body>
+</html>
