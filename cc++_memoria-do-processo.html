@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:250px;padding:5px;">&nbsp;&nbsp;Mem&oacute;ria do Processo</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=0GXlqqu7PWI" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;windows.h&gt;
+#include &lt;psapi.h&gt;
+
+int main(int argc, char *argv[])
+{
+    HANDLE hProcess = 0;
+    PROCESS_MEMORY_COUNTERS pmc;
+    DWORD cb = sizeof( pmc );
+
+    hProcess = OpenProcess( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, 9760 );
+
+    BOOL rc = GetProcessMemoryInfo( hProcess, &pmc, cb );
+
+    printf( "rc: %d\n", rc );
+    printf( "PageFaultCount: %d\n", pmc.PageFaultCount );
+    printf( "PeakWorkingSetSize: %d\n", pmc.PeakWorkingSetSize );
+    printf( "WorkingSetSize: %d\n", pmc.WorkingSetSize );
+    printf( "QuotaPeakPagedPoolUsage: %d\n", pmc.QuotaPeakPagedPoolUsage );
+    printf( "QuotaPagedPoolUsage: %d\n", pmc.QuotaPagedPoolUsage );
+    printf( "QuotaPeakNonPagedPoolUsage: %d\n", pmc.QuotaPeakNonPagedPoolUsage );
+    printf( "QuotaNonPagedPoolUsage: %d\n", pmc.QuotaNonPagedPoolUsage );
+    printf( "PagefileUsage: %d\n", pmc.PagefileUsage );
+    printf( "PeakPagefileUsage: %d\n", pmc.PeakPagefileUsage );
+
+    printf( "\n\n\n" );
+    return 0;
+}
+
+</pre>
+</body>
+</html>
