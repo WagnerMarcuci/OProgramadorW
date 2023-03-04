@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:250px;padding:5px;">&nbsp;&nbsp;Copy Personalizado</h2>
+<br/>
+<a href="https://studio.youtube.com/video/sgaPbPBs4mc/edit" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;windows.h&gt;
+#include &lt;winbase.h&gt;
+#include &lt;errhandlingapi.h&gt;
+#include &lt;stdio.h&gt;
+
+BOOL mostrar = FALSE;
+
+ DWORD WINAPI CopyFileEx_progress(
+        LARGE_INTEGER TotalFileSize,
+        LARGE_INTEGER TotalBytesTransferred,
+        LARGE_INTEGER StreamSize,
+        LARGE_INTEGER StreamBytesTransferred,
+        DWORD dwStreamNumber,
+        DWORD dwCallbackReason,
+        HANDLE hSourceFile,
+        HANDLE hDestinationFile,
+        LPVOID lpData)
+{
+    if ( mostrar )
+    {
+        printf( "TotalFileSize.........: %ld\n", TotalFileSize );
+        printf( "TotalBytesTransferred.: %ld\n", TotalBytesTransferred );
+        printf( "StreamSize............: %ld\n", StreamSize );
+        printf( "StreamBytesTransferred: %ld\n", StreamBytesTransferred );
+        printf( "dwStreamNumber........: %d\n", dwStreamNumber );
+
+        printf( "dwCallbackReason......: %d\n", dwCallbackReason );
+        //CALLBACK_CHUNK_FINISHED - outra parte do arquivo foi copiada
+        //CALLBACK_STREAM_SWITCH  - outra parte foi criada e será copiada
+
+        printf( "hSourceFile...........: %ld\n", hSourceFile )    ;
+        printf( "hDestinationFile......: %ld\n", hDestinationFile );
+        printf( "lpData................: %s\n", lpData );
+    }
+    else
+    {
+        long transferido = TotalBytesTransferred.LowPart;
+        long total = TotalFileSize.LowPart;
+        double tmp = ( double )transferido * 100;
+
+        tmp /= total;
+        int porcentagem = ( int )tmp;
+
+        printf( "\r==&gt; %ld : %d = %d%%          ",
+               total, transferido, porcentagem );
+    }
+
+    return PROGRESS_CONTINUE;
+    //PROGRESS_CANCEL - cancela a copia e apaga o destino
+    //PROGRESS_STOP   - cancela a copia e mantem o arquivo parcial
+    //PROGRESS_QUIET  - não invoca esta rotina
+}
+
+
+int main( int argc, char *argv[ ] )
+{
+    char lpExistingFileName[ MAX_PATH ];
+    char lpNewFileName[ MAX_PATH ];
+    void * lpData = NULL;
+    BOOL pbCancel = FALSE; // cancelar durante a copia = TRUE
+    DWORD dwCopyFlags = 0;
+
+    //COPY_FILE_ALLOW_DECRYPTED_DESTINATION   0x00000008
+    //COPY_FILE_COPY_SYMLINK                  0x00000800
+    //COPY_FILE_FAIL_IF_EXISTS                0x00000001
+    //COPY_FILE_NO_BUFFERING                  0x00001000
+    //COPY_FILE_OPEN_SOURCE_FOR_WRITE         0x00000004
+    //COPY_FILE_RESTARTABLE                   0x00000002
+    //COPY_FILE_REQUEST_COMPRESSED_TRAFFIC    0x10000000
+    // você pode utilizar mais de 1 ao mesmo tempo.
+
+    strncpy( lpExistingFileName, argv[ 1 ], MAX_PATH - 1 );
+    strncpy( lpNewFileName, argv[ 2 ], MAX_PATH - 1 );
+
+    BOOL rc = CopyFileExA(
+        lpExistingFileName,
+        lpNewFileName,
+        &CopyFileEx_progress,
+        &lpData,
+        &pbCancel,
+        dwCopyFlags );
+
+    printf( "\nrc: %d\n", rc );
+
+    // rc = 0, erro
+    // rc = 1, OK
+
+    return 0;
+}
+
+
+</pre>
+</body>
+</html>
