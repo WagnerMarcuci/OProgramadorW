@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:240px;padding:5px;">&nbsp;&nbsp;Copy Personalizado</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=0P5zlqwq_uQ" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;windows.h&gt;
+#include &lt;winbase.h&gt;
+#include &lt;errhandlingapi.h&gt;
+#include &lt;stdio.h&gt;
+
+BOOL mostrar = TRUE;
+
+ DWORD WINAPI MoveFileEx_progress(
+        LARGE_INTEGER TotalFileSize,
+        LARGE_INTEGER TotalBytesTransferred,
+        LARGE_INTEGER StreamSize,
+        LARGE_INTEGER StreamBytesTransferred,
+        DWORD dwStreamNumber,
+        DWORD dwCallbackReason,
+        HANDLE hSourceFile,
+        HANDLE hDestinationFile,
+        LPVOID lpData)
+{
+    if ( mostrar )
+    {
+        printf( "TotalFileSize.........: %ld\n", TotalFileSize );
+        printf( "TotalBytesTransferred.: %ld\n", TotalBytesTransferred );
+        printf( "StreamSize............: %ld\n", StreamSize );
+        printf( "StreamBytesTransferred: %ld\n", StreamBytesTransferred );
+        printf( "dwStreamNumber........: %d\n", dwStreamNumber );
+
+        printf( "dwCallbackReason......: %d\n", dwCallbackReason );
+        //CALLBACK_CHUNK_FINISHED - outra parte do arquivo foi copiada
+        //CALLBACK_STREAM_SWITCH  - outra parte foi criada e será copiadad
+
+        printf( "hSourceFile...........: %ld\n", hSourceFile )    ;
+        printf( "hDestinationFile......: %ld\n", hDestinationFile );
+        printf( "lpData................: %s\n", lpData );
+    }
+    else
+    {
+        long transferido = TotalBytesTransferred.LowPart;
+        long total = TotalFileSize.LowPart;
+        double tmp = ( double )transferido * 100;
+
+        tmp /= total;
+        int porcentagem = ( int )tmp;
+
+        printf( "\r==&gt; %ld : %d = %d%%          ",
+               total, transferido, porcentagem );
+    }
+
+    return PROGRESS_CONTINUE;
+    //PROGRESS_CANCEL - cancela a copia e apaga o destino
+    //PROGRESS_STOP   - cancela a copia e mantem o arquivo parcial
+    //PROGRESS_QUIET  - não invoca esta rotina
+}
+
+
+int main( int argc, char *argv[ ] )
+{
+    char lpExistingFileName[ MAX_PATH ];
+    char lpNewFileName[ MAX_PATH ];
+    void * lpData = NULL;
+    DWORD dwFlags = MOVEFILE_WRITE_THROUGH | MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING;
+
+    //MOVEFILE_COPY_ALLOWED - 2 (0x2) - copia em volumes diferentes
+    //MOVEFILE_CREATE_HARDLINK - 16 (0x10) - uso futuro
+    //MOVEFILE_DELAY_UNTIL_REBOOT - 4 (0x4) - move depois de restart do sistema
+    //MOVEFILE_FAIL_IF_NOT_TRACKABLE - 32 (0x20) - se o arquivo for link não faz a cópia
+    //MOVEFILE_REPLACE_EXISTING - 1 (0x1) - move se existir
+    //MOVEFILE_WRITE_THROUGH - 8 (0x8) - confirma a cópia antes do delete
+
+    strncpy( lpExistingFileName, argv[ 1 ], MAX_PATH - 1 );
+    strncpy( lpNewFileName, argv[ 2 ], MAX_PATH - 1 );
+
+    BOOL rc = MoveFileWithProgressA(
+        lpExistingFileName,
+        lpNewFileName,
+        &MoveFileEx_progress,
+        &lpData,
+        dwFlags );
+
+    printf( "\nrc: %d\n", rc );
+
+    return 0;
+}
+
+</pre>
+</body>
+</html>
