@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:200px;padding:5px;">&nbsp;&nbsp;Barra de Tarefas</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=CHSe9Oj1UTg"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;windows.h&gt;
+#include &lt;iostream&gt;
+
+int main()
+{
+    HWND h = FindWindowA( "Shell_traywnd", "" );
+
+    if ( !h )
+    {
+        std::cout &lt;&lt; "erro ao obter barra" &lt;&lt; std::endl;
+        return 1;
+    }
+
+    SetWindowPos( h, 0, 0, 0, 0, 0, SWP_HIDEWINDOW );
+
+    system( "timeout 5 " );
+
+    SetWindowPos( h, 0, 0, 0, 0, 0, SWP_SHOWWINDOW );
+
+    return 0;
+}
+
+</pre>
+</body>
+</html>
