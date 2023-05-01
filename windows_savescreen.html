@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:150px;padding:5px;">&nbsp;&nbsp;SaveScreen</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=kFuSrNuzM-Y"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#if defined(UNICODE) && !defined(_UNICODE)
+    #define _UNICODE
+#elif defined(_UNICODE) && !defined(UNICODE)
+    #define UNICODE
+#endif
+
+#include &lt;tchar.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;windows.h&gt;
+
+void GetScreenShot( HWND );
+void CreateBMPFile(HWND, LPTSTR, PBITMAPINFO, HBITMAP, HDC );
+PBITMAPINFO CreateBitmapInfoStruct(HWND, HBITMAP);
+
+LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
+
+TCHAR szClassName[ ] = _T("CodeBlocksWindowsApp");
+
+int WINAPI WinMain (HINSTANCE hThisInstance,
+                     HINSTANCE hPrevInstance,
+                     LPSTR lpszArgument,
+                     int nCmdShow)
+{
+    HWND hwnd;
+    MSG messages;
+    WNDCLASSEX wincl;
+
+    wincl.hInstance = hThisInstance;
+    wincl.lpszClassName = szClassName;
+    wincl.lpfnWndProc = WindowProcedure;
+    wincl.style = CS_DBLCLKS;
+    wincl.cbSize = sizeof (WNDCLASSEX);
+    wincl.hIcon = LoadIcon (NULL, IDI_APPLICATION);
+    wincl.hIconSm = LoadIcon (NULL, IDI_APPLICATION);
+    wincl.hCursor = LoadCursor (NULL, IDC_ARROW);
+    wincl.lpszMenuName = NULL;
+    wincl.cbClsExtra = 0;
+    wincl.cbWndExtra = 0;
+    wincl.hbrBackground = (HBRUSH) COLOR_BACKGROUND;
+
+    if ( !RegisterClassEx ( &wincl ) )
+    {
+        return 0;
+    }
+
+    hwnd = CreateWindowEx (
+           0,
+           szClassName,
+           _T("Code::Blocks Template Windows App"),
+           WS_OVERLAPPEDWINDOW,
+           CW_USEDEFAULT,
+           CW_USEDEFAULT,
+           544,
+           375,
+           HWND_DESKTOP,
+           NULL,
+           hThisInstance,
+           NULL );
+
+    ShowWindow (hwnd, nCmdShow);
+
+    while (GetMessage (&messages, NULL, 0, 0))
+    {
+        TranslateMessage(&messages);
+        DispatchMessage(&messages);
+    }
+
+    return messages.wParam;
+}
+
+
+LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    switch (message)
+    {
+        case WM_DESTROY:
+            PostQuitMessage (0);
+            break;
+        case WM_LBUTTONDOWN:
+            //
+            // capturar a tela
+            //
+            GetScreenShot( hwnd );
+            break;
+        default:
+            return DefWindowProc (hwnd, message, wParam, lParam);
+    }
+
+    return 0;
+}
+
+void GetScreenShot( HWND hwnd )
+{
+    int x1, y1, x2, y2, w, h;
+
+    // get screen dimensions
+    x1  = GetSystemMetrics(SM_XVIRTUALSCREEN);
+    y1  = GetSystemMetrics(SM_YVIRTUALSCREEN);
+    x2  = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+    y2  = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+    w   = x2 - x1;
+    h   = y2 - y1;
+
+    // copy screen to bitmap
+    HDC     hScreen = GetDC(NULL);
+    HDC     hDC     = CreateCompatibleDC(hScreen);
+    HBITMAP hBitmap = CreateCompatibleBitmap(hScreen, w, h);
+    HGDIOBJ old_obj = SelectObject(hDC, hBitmap);
+    BOOL    bRet    = BitBlt(hDC, 0, 0, w, h, hScreen, x1, y1, SRCCOPY);
+
+    // save bitmap to clipboard
+    OpenClipboard(NULL);
+    EmptyClipboard();
+    SetClipboardData(CF_BITMAP, hBitmap);
+    CloseClipboard();
+
+    //
+    PBITMAPINFO pbi = CreateBitmapInfoStruct(hwnd, hBitmap);
+
+    if ( pbi == NULL )
+    {
+        printf( "erro ao gerar estrutura do BMP\n" );
+        return;
+    }
+
+    CreateBMPFile( hwnd, "arquivo.bmp", pbi, hBitmap, hDC );
+
+    // clean up
+    SelectObject(hDC, old_obj);
+    DeleteDC(hDC);
+    ReleaseDC(NULL, hScreen);
+    DeleteObject(hBitmap);
+}
+
+void CreateBMPFile(HWND hwnd, LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC)
+{
+    HANDLE hf;
+    BITMAPFILEHEADER hdr;
+    PBITMAPINFOHEADER pbih;
+    LPBYTE lpBits;
+    DWORD dwTotal;
+    DWORD cb;
+    BYTE *hp;
+    DWORD dwTmp;
+
+    pbih = (PBITMAPINFOHEADER) pbi;
+    lpBits = (LPBYTE) GlobalAlloc(GMEM_FIXED, pbih-&gt;biSizeImage);
+
+    if (!lpBits)
+    {
+        printf( "erro no GlobalAlloc\n");
+        return;
+    }
+
+    if (!GetDIBits(hDC, hBMP, 0, (WORD) pbih-&gt;biHeight, lpBits, pbi, DIB_RGB_COLORS))
+    {
+        printf( "GetDIBits\n" );
+        return;
+    }
+
+    // Create the .BMP file.
+    hf = CreateFile(pszFile,
+        GENERIC_READ | GENERIC_WRITE,
+        (DWORD) 0,
+        NULL,
+        CREATE_ALWAYS,
+        FILE_ATTRIBUTE_NORMAL,
+        (HANDLE) NULL);
+    if (hf == INVALID_HANDLE_VALUE)
+    {
+        printf("CreateFile\n" );
+        return;
+    }
+
+    hdr.bfType = 0x4d42;        // 0x42 = "B" 0x4d = "M"
+
+    // Compute the size of the entire file.
+    hdr.bfSize = (DWORD) (sizeof(BITMAPFILEHEADER) +
+        pbih-&gt;biSize + pbih-&gt;biClrUsed
+        * sizeof(RGBQUAD) + pbih-&gt;biSizeImage);
+    hdr.bfReserved1 = 0;
+    hdr.bfReserved2 = 0;
+
+    // Compute the offset to the array of color indices.
+    hdr.bfOffBits = (DWORD) sizeof(BITMAPFILEHEADER) +
+        pbih-&gt;biSize + pbih-&gt;biClrUsed
+        * sizeof (RGBQUAD);
+
+    // Copy the BITMAPFILEHEADER into the .BMP file.
+    if (!WriteFile(hf, (LPVOID) &hdr, sizeof(BITMAPFILEHEADER),
+        (LPDWORD) &dwTmp,  NULL))
+    {
+        printf("WriteFile\n" );
+    }
+
+    // Copy the BITMAPINFOHEADER and RGBQUAD array into the file.
+    if (!WriteFile(hf, (LPVOID) pbih, sizeof(BITMAPINFOHEADER)
+        + pbih-&gt;biClrUsed * sizeof (RGBQUAD),
+        (LPDWORD) &dwTmp, ( NULL)))
+        printf("WriteFile\n");
+
+    // Copy the array of color indices into the .BMP file.
+    dwTotal = cb = pbih-&gt;biSizeImage;
+    hp = lpBits;
+    if (!WriteFile(hf, (LPSTR) hp, (int) cb, (LPDWORD) &dwTmp,NULL))
+        printf("WriteFile\n");
+
+    // Close the .BMP file.
+    if (!CloseHandle(hf))
+        printf("CloseHandle\n");
+
+    // Free memory.
+    GlobalFree((HGLOBAL)lpBits);
+}
+
+
+PBITMAPINFO CreateBitmapInfoStruct(HWND hwnd, HBITMAP hBmp)
+{
+    BITMAP bmp;
+    PBITMAPINFO pbmi;
+    WORD    cClrBits;
+
+    // Retrieve the bitmap color format, width, and height.
+    if (!GetObject(hBmp, sizeof(BITMAP), (LPSTR)&bmp))
+    {
+        printf("GetObject\n");
+        return NULL;
+    }
+
+    // Convert the color format to a count of bits.
+    cClrBits = (WORD)(bmp.bmPlanes * bmp.bmBitsPixel);
+
+    if (cClrBits == 1)          cClrBits = 1;
+    else if (cClrBits &lt;= 4)     cClrBits = 4;
+    else if (cClrBits &lt;= 8)     cClrBits = 8;
+    else if (cClrBits &lt;= 16)    cClrBits = 16;
+    else if (cClrBits &lt;= 24)    cClrBits = 24;
+    else                        cClrBits = 32;
+
+    // Allocate memory for the BITMAPINFO structure. (This structure
+    // contains a BITMAPINFOHEADER structure and an array of RGBQUAD
+    // data structures.)
+
+    // There is no RGBQUAD array for these formats: 24-bit-per-pixel or 32-bit-per-pixel
+    if (cClrBits &lt; 24)
+    {
+        pbmi = (PBITMAPINFO) LocalAlloc(LPTR,
+            sizeof(BITMAPINFOHEADER) +
+            sizeof(RGBQUAD) * (1&lt;&lt; cClrBits));
+    }
+    else
+    {
+        pbmi = (PBITMAPINFO) LocalAlloc(LPTR, sizeof(BITMAPINFOHEADER));
+    }
+
+    // Initialize the fields in the BITMAPINFO structure.
+    pbmi-&gt;bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    pbmi-&gt;bmiHeader.biWidth = bmp.bmWidth;
+    pbmi-&gt;bmiHeader.biHeight = bmp.bmHeight;
+    pbmi-&gt;bmiHeader.biPlanes = bmp.bmPlanes;
+    pbmi-&gt;bmiHeader.biBitCount = bmp.bmBitsPixel;
+
+    if (cClrBits &lt; 24)
+    {
+        pbmi-&gt;bmiHeader.biClrUsed = (1&lt;&lt;cClrBits);
+    }
+
+    // If the bitmap is not compressed, set the BI_RGB flag.
+    pbmi-&gt;bmiHeader.biCompression = BI_RGB;
+
+    // Compute the number of bytes in the array of color
+    // indices and store the result in biSizeImage.
+    // The width must be DWORD aligned unless the bitmap is RLE
+    // compressed.
+    pbmi-&gt;bmiHeader.biSizeImage = ((pbmi-&gt;bmiHeader.biWidth * cClrBits +31) & ~31) /8
+        * pbmi-&gt;bmiHeader.biHeight;
+    // Set biClrImportant to 0, indicating that all of the
+    // device colors are important.
+    pbmi-&gt;bmiHeader.biClrImportant = 0;
+    return pbmi;
+}
+
+</pre>
+</body>
+</html>
