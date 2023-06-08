@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:230px;padding:5px;">&nbsp;&nbsp;Windows Processo</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=M5153X2_6B4" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;iostream&gt;
+#include &lt;windows.h&gt;
+
+#define CreateProcess CreateProcessA
+#define STARTUPINFO   STARTUPINFOA
+
+using namespace std;
+
+int main()
+{
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+    SECURITY_ATTRIBUTES saAttr;
+    DWORD flags = NORMAL_PRIORITY_CLASS | CREATE_NEW_PROCESS_GROUP | CREATE_NEW_CONSOLE;
+
+    ZeroMemory(&saAttr, sizeof(saAttr));
+    ZeroMemory(&si, sizeof(si));
+    ZeroMemory(&pi, sizeof(pi));
+
+    const BOOL rc = CreateProcess(NULL, // No module name (use command line)
+        "ping www.google.com.br",       // command
+        NULL,                           // Process handle not inheritable
+        NULL,                           // Thread handle not inheritable
+        TRUE,                           // Set handle inheritance
+        flags,                          // No creation flags
+        NULL,                           // Use parent's environment block
+        NULL,                           // Use parent's starting directory
+        &si,                            // Pointer to STARTUPINFO structure
+        &pi);                           // Pointer to PROCESS_INFORMATION structure
+
+    if ( rc )
+    {
+        std::cout &lt;&lt; "pi.hProcess...: " &lt;&lt; pi.hProcess &lt;&lt; std::endl;
+        std::cout &lt;&lt; "pi.dwProcessId: " &lt;&lt; pi.dwProcessId &lt;&lt; std::endl;
+        std::cout &lt;&lt; "pi.hThread....: " &lt;&lt; pi.hThread &lt;&lt; std::endl;
+        std::cout &lt;&lt; "pi.dwThreadId.: " &lt;&lt; pi.dwThreadId &lt;&lt; std::endl;
+        std::cout &lt;&lt; "---------------------" &lt;&lt; std::endl;
+        WaitForSingleObject(pi.hProcess, INFINITE);
+        std::cout &lt;&lt; "saindo..." &lt;&lt; std::endl;
+        CloseHandle(pi.hThread);
+        CloseHandle(pi.hProcess);
+    }
+
+    return 0;
+}
+
+</pre>
+</body>
+</html>
