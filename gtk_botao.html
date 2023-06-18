@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:150px;padding:5px;">&nbsp;&nbsp;Gtk - Botão</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=I1IkbyquDOg"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;gtk/gtk.h&gt;
+#include &lt;stdio.h&gt;
+
+void click_botao( void )
+{
+    printf( "botao clicado\n" );
+}
+
+GtkWidget * criar_botao( void )
+{
+    GtkWidget * botao = gtk_button_new();
+    
+    if ( !botao )
+    {
+        printf( "erro na criacao do botao\n" );
+        return NULL;
+    }
+    
+    gtk_button_set_label( ( GtkButton * )botao, "nome botao" );
+    return botao;
+}
+
+int main( int argc, char * argv[] )
+{
+    GtkWidget * janela = NULL;
+    
+    gtk_init( &argc, &argv );
+    
+    janela = gtk_window_new( GTK_WINDOW_TOPLEVEL );
+    
+    g_signal_connect( janela, "destroy", G_CALLBACK( gtk_main_quit ), NULL );
+    
+    gtk_widget_show( janela );
+    
+    gtk_window_set_title( ( GtkWindow * )janela, "Titulo da Janela" );
+    
+    gtk_window_resize( ( GtkWindow * )janela, 400, 500 );
+    
+    GtkWidget * botao = criar_botao();
+    
+    g_signal_connect( botao, "clicked", G_CALLBACK( click_botao ), NULL );
+    
+    GtkWidget * h1 = gtk_box_new( GTK_ORIENTATION_VERTICAL, 5 );
+    
+    gtk_box_pack_start( GTK_BOX( h1 ), botao, FALSE, FALSE, 0 );
+    
+    gtk_container_add( GTK_CONTAINER( janela ), h1 );
+    
+    gtk_widget_show_all( janela );
+    
+    gtk_main();
+    
+    return 0;
+        
+}
+</pre>
+</body>
+</html>
