@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:150px;padding:5px;">&nbsp;&nbsp;Gtk - Label</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=E8qQ9N6CRpk"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;gtk/gtk.h&gt;
+#include &lt;stdio.h&gt;
+
+GtkWidget * criar_label( void )
+{
+    GtkWidget * label = gtk_label_new( "aqui um label\n1\n2" );
+    
+    if ( !label )
+    {
+        printf( "erro na criacao do label\n" );
+        return NULL;
+    }
+
+    //gtk_label_set_justify( ( GtkLabel * ) label, GTK_JUSTIFY_RIGHT );
+    gtk_label_set_angle( ( GtkLabel * )label, 90.0 );
+    return label;
+}
+
+int main( int argc, char * argv[] )
+{
+    GtkWidget * janela = NULL;
+    
+    gtk_init( &argc, &argv );
+    
+    janela = gtk_window_new( GTK_WINDOW_TOPLEVEL );
+    
+    g_signal_connect( janela, "destroy", G_CALLBACK( gtk_main_quit ), NULL );
+    
+    gtk_widget_show( janela );
+    
+    gtk_window_set_title( ( GtkWindow * )janela, "Titulo da Janela" );
+    
+    gtk_window_resize( ( GtkWindow * )janela, 400, 500 );
+    
+    GtkWidget * label = criar_label();
+    
+    GtkWidget * v1 = gtk_box_new( GTK_ORIENTATION_VERTICAL, 5 );
+    
+    gtk_box_pack_start( GTK_BOX( v1 ), label, FALSE, FALSE, 0 );
+    
+    gtk_container_add( GTK_CONTAINER( janela ), v1 );
+    
+    gtk_widget_show_all( janela );
+    
+    gtk_main();
+    
+    return 0;
+}
+</pre>
+</body>
+</html>
