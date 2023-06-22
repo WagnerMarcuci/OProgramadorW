@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:200px;padding:5px;">&nbsp;&nbsp;Gtk - checkbox</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=5R5rvtZknLo" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;gtk/gtk.h&gt;
+#include &lt;stdio.h&gt;
+
+void eventos_checkbox( GtkWidget * widget, gpointer * data)
+{
+    printf( "evento: %s\n", data);
+}
+
+GtkWidget * criar_checkbox( void )
+{
+    GtkWidget * check = gtk_check_button_new_with_label("verdadeiro");
+    
+    if ( !check )
+    {
+        printf( "erro na criacao do checkbox\n" );
+        return NULL;
+    }
+    
+    return check;
+}
+
+int main( int argc, char * argv[] )
+{
+    GtkWidget * janela = NULL;
+    
+    gtk_init( &argc, &argv );
+    
+    janela = gtk_window_new( GTK_WINDOW_TOPLEVEL );
+    
+    g_signal_connect( janela, "destroy", G_CALLBACK( gtk_main_quit ), NULL );
+    
+    gtk_widget_show( janela );
+    
+    gtk_window_set_title( ( GtkWindow * )janela, "Titulo da Janela" );
+    
+    gtk_window_resize( ( GtkWindow * )janela, 400, 500 );
+    
+    GtkWidget * check = criar_checkbox();
+    
+    // ja esta clicado
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON( check ), TRUE);
+
+    // eventos
+   g_signal_connect ( check, "toggled",
+			G_CALLBACK ( eventos_checkbox ), "check 1 toggled");
+   g_signal_connect ( check, "pressed",
+			G_CALLBACK ( eventos_checkbox ), "check 1 pressed");
+   g_signal_connect ( check, "released",
+			G_CALLBACK ( eventos_checkbox ), "check 1 released");
+    g_signal_connect ( check, "clicked",
+			G_CALLBACK ( eventos_checkbox ), "check 1 clicked");
+   g_signal_connect ( check, "enter",
+			G_CALLBACK ( eventos_checkbox ), "check 1 enter");
+   g_signal_connect ( check, "leave",
+			G_CALLBACK ( eventos_checkbox ), "check 1 leave");    
+    GtkWidget * h1 = gtk_box_new( GTK_ORIENTATION_VERTICAL, 5 );
+    
+    gtk_box_pack_start( GTK_BOX( h1 ), check, FALSE, FALSE, 0 );
+    
+    gtk_container_add( GTK_CONTAINER( janela ), h1 );
+    
+    gtk_widget_show_all( janela );
+    
+    gtk_main();
+    
+    return 0;
+        
+}
+
+
+</pre>
+</body>
+</html>
