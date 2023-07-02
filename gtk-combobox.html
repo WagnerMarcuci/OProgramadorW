@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:200px;padding:5px;">&nbsp;&nbsp;GTK - combobox</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=xx8t6euyUQ8" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;gtk/gtk.h&gt;
+#include &lt;stdio.h&gt;
+
+GtkWidget * g_combobox = 0;
+
+void click_combobox( GtkWidget * widget, gpointer * data )
+{
+    printf( "evento combobox: %s\n", data);
+    const char * id = gtk_combo_box_get_active_id( ( GtkComboBox * )g_combobox );
+    const char * item = gtk_combo_box_text_get_active_text( ( GtkComboBoxText * )g_combobox );
+    printf( "item clicado: %s - %s\n", id, item );
+}
+
+void criar_combobox( void )
+{
+    g_combobox = gtk_combo_box_text_new();
+    
+    if ( !g_combobox )
+    {
+        printf( "erro na criacao do combobox\n" );
+    }
+}
+
+void adicionar_combobox( const char * id, const char * texto )
+{
+    gtk_combo_box_text_append( ( GtkComboBoxText * )g_combobox, id, texto );
+}
+
+int main( int argc, char * argv[] )
+{
+    GtkWidget * janela = NULL;
+    
+    gtk_init( &argc, &argv );
+    
+    janela = gtk_window_new( GTK_WINDOW_TOPLEVEL );
+    
+    g_signal_connect( janela, "destroy", G_CALLBACK( gtk_main_quit ), NULL );
+    
+    gtk_widget_show( janela );
+    
+    gtk_window_set_title( ( GtkWindow * )janela, "Titulo da Janela" );
+    
+    gtk_window_resize( ( GtkWindow * )janela, 400, 500 );
+
+    // combobox    
+    criar_combobox();
+    adicionar_combobox( "1", "Item 01" );
+    adicionar_combobox( "2", "Item 02" );
+    adicionar_combobox( "3", "Item 03" );
+    adicionar_combobox( "4", "Item 04" );
+
+    g_signal_connect ( g_combobox, "changed",
+                        G_CALLBACK ( click_combobox ), "click changed");
+
+    // ativar um item pela posição na lista
+    //gtk_combo_box_set_active( ( GtkComboBox * )g_combobox, 2 ); // existe
+    //gtk_combo_box_set_active( ( GtkComboBox * )g_combobox, 12 ); // nao existe
+
+    // inserir no meio da lista
+    //gtk_combo_box_text_insert( ( GtkComboBoxText * )g_combobox, 2, "5", "Item 05" );
+
+    // remover um item
+    // gtk_combo_box_text_remove( ( GtkComboBoxText * )g_combobox, 1 );
+
+    // ativar um item por id
+    /*
+    gboolean isAchou = 
+        gtk_combo_box_set_active_id( ( GtkComboBox * )g_combobox, "3" );
+    printf( "isAchou: %d\n", isAchou );
+    isAchou = 
+        gtk_combo_box_set_active_id( ( GtkComboBox * )g_combobox, "13" );
+    printf( "isAchou: %d\n", isAchou );
+    */
+    
+    // limpar o combo
+    //gtk_combo_box_text_remove_all( ( GtkComboBoxText * )g_combobox );
+
+    // funcao depreciada ( nao utilizada na proxima versao )
+    //gtk_combo_box_set_title ( (GtkComboBox * )g_combobox, "ola" );
+
+    // alterar um item no combo
+    //gtk_combo_box_text_remove( ( GtkComboBoxText * )g_combobox, 1 );
+    //gtk_combo_box_text_insert( ( GtkComboBoxText * )g_combobox, 1, "2", "**** Item 05" );
+
+    GtkWidget * h1 = gtk_box_new( GTK_ORIENTATION_VERTICAL, 5 );
+    
+    gtk_box_pack_start( GTK_BOX( h1 ), g_combobox, FALSE, FALSE, 0 );
+    
+    gtk_container_add( GTK_CONTAINER( janela ), h1 );
+    
+    gtk_widget_show_all( janela );
+    
+    gtk_main();
+    
+    return 0;
+}
+
+</pre>
+</body>
+</html>
