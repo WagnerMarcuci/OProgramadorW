@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:160px;padding:5px;">&nbsp;&nbsp;GTK - texto</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=I8v0OmFq6Yk" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;gtk/gtk.h&gt;
+#include &lt;stdio.h&gt;
+
+#include <gtk/gtk.h>
+#include <stdio.h>
+
+void func_texto_01( GtkEntry * widget, gpointer * data )
+{
+    printf( "func_texto_01: %s\n", data );
+}
+
+GtkWidget * criar_texto( void )
+{
+    GtkWidget * texto = gtk_entry_new ();
+    
+    if ( !texto )
+    {
+        printf( "erro na criacao do texto\n" );
+        return NULL;
+    }
+    
+    return texto;
+}
+
+int main( int argc, char * argv[] )
+{
+    GtkWidget * janela = NULL;
+    
+    gtk_init( &argc, &argv );
+    
+    janela = gtk_window_new( GTK_WINDOW_TOPLEVEL );
+    
+    g_signal_connect( janela, "destroy", G_CALLBACK( gtk_main_quit ), NULL );
+    
+    gtk_widget_show( janela );
+    
+    gtk_window_set_title( ( GtkWindow * )janela, "Titulo da Janela" );
+    
+    gtk_window_resize( ( GtkWindow * )janela, 400, 500 );
+    
+    GtkWidget * texto = criar_texto();
+
+    // eventos
+    g_signal_connect( texto, "backspace", 
+        G_CALLBACK( func_texto_01 ), "backspace" );
+    g_signal_connect( texto, "activate", 
+        G_CALLBACK( func_texto_01 ), "deu ENTER" );
+    g_signal_connect( texto, "changed", 
+        G_CALLBACK( func_texto_01 ), "alterando..." );
+
+    // tooltip
+    //gtk_widget_set_tooltip_text ( ( GtkWidget * )texto, "EU SOU UM TOOLTIP" );
+
+    // tamanho maximo
+    //gtk_entry_set_max_length( ( GtkEntry * )texto, 10 );
+
+    // obter o tamanho maximo
+    /*
+    gint tamanho = gtk_entry_get_max_length( ( GtkEntry * )texto );
+    printf( "tamanho: %d\n", tamanho );
+    */
+
+    // texto de ajuda ou placeholder
+    //gtk_entry_set_placeholder_text( ( GtkEntry * )texto, "digite algo" );
+
+    // transformar o campo em digitação de senha
+    //gtk_entry_set_visibility( GTK_ENTRY( texto ), FALSE);
+
+    // setar e obter o conteudo do texto
+    
+    gtk_entry_set_text( ( GtkEntry * )texto, "Olá !" );
+    const gchar * digitado = gtk_entry_get_text( ( GtkEntry * )texto  );
+    printf( "Texto digitado: %s\n", digitado );
+    char * converter = g_strdup( digitado );
+    char * local = g_locale_from_utf8( converter, 
+                                       ( gssize )strlen( converter ),
+                                       ( gssize )0,
+                                       ( gssize )0,
+                                       ( GError ** ) 0 );
+    printf( "Texto digitado: %s\n", local );
+    
+    
+
+    GtkWidget * h1 = gtk_box_new( GTK_ORIENTATION_VERTICAL, 5 );
+    
+    gtk_box_pack_start( GTK_BOX( h1 ), texto, FALSE, FALSE, 0 );
+    
+    gtk_container_add( GTK_CONTAINER( janela ), h1 );
+    
+    gtk_widget_show_all( janela );
+    
+    gtk_main();
+    
+    return 0;
+        
+}
+
+
+</pre>
+</body>
+</html>
