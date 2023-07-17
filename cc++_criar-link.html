@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:130px;padding:5px;">&nbsp;&nbsp;criar link</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=GMxTai8xU_I"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+biblioteca ol32
+
+
+#define INITGUID
+#include &lt;windows.h&gt;
+#include &lt;shobjidl.h&gt;
+#include &lt;shlguid.h&gt;
+#include &lt;initguid.h&gt;
+#include &lt;iostream&gt;
+
+int main()
+{
+    IShellLink * pShellLink;
+    HRESULT hr = ::CoInitializeEx(0, COINIT_MULTITHREADED);
+
+	if (!SUCCEEDED(hr))
+	{
+		std::cout &lt;&lt; "\n  could not initialize COM" &lt;&lt; std::endl;
+		return 1;
+	}
+
+    ::CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_ALL, IID_IShellLink, (void**)&pShellLink);
+    pShellLink-&gt;SetPath("C:\\Windows\\System32\\cmd.exe");
+    pShellLink-&gt;SetDescription("The Python shell");
+    pShellLink-&gt;SetIconLocation("C:\\Windows\\System32\\cmd.exe", 0);
+
+    IPersistFile *pPersistFile;
+    pShellLink-&gt;QueryInterface(IID_IPersistFile, (void**)&pPersistFile);
+    pPersistFile-&gt;Save(L"C:\\Windows\\Temp\\Link.lnk", TRUE);
+
+    pPersistFile-&gt;Release();
+    pShellLink-&gt;Release();
+
+	CoUninitialize();
+    return 0;
+}
+
+
+</pre>
+</body>
+</html>
