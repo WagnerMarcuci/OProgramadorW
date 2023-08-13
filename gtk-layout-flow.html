@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:220px;padding:5px;">&nbsp;&nbsp;GTK - layout - flow</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=V3ErS_VBY6s" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;gtk/gtk.h&gt;
+#include &lt;stdio.h&gt;
+
+int main( int argc, char * argv[] )
+{
+    GtkWidget * janela = NULL;
+    
+    gtk_init( &argc, &argv );
+    
+    janela = gtk_window_new( GTK_WINDOW_TOPLEVEL );
+
+    GtkWidget * botao_01 = gtk_button_new();
+    gtk_button_set_label( ( GtkButton * )botao_01, "botao 01" );
+
+    GtkWidget * botao_02 = gtk_button_new();
+    gtk_button_set_label( ( GtkButton * )botao_02, "botao 02" );
+    
+    GtkWidget * botao_03 = gtk_button_new();
+    gtk_button_set_label( ( GtkButton * )botao_03, "botao 03" );
+    
+    GtkWidget * botao_04 = gtk_button_new();
+    gtk_button_set_label( ( GtkButton * )botao_04, "botao 04" );
+    
+    GtkWidget * botao_05 = gtk_button_new();
+    gtk_button_set_label( ( GtkButton * )botao_05, "botao 05" );
+    
+    GtkWidget * botao_06 = gtk_button_new();
+    gtk_button_set_label( ( GtkButton * )botao_06, "botao 06" );
+    
+    g_signal_connect( janela, "destroy", G_CALLBACK( gtk_main_quit ), NULL );
+    
+    gtk_widget_show( janela );
+    
+    gtk_window_set_title( ( GtkWindow * )janela, "Titulo da Janela" );
+    
+    gtk_window_resize( ( GtkWindow * )janela, 400, 500 );
+    
+    GtkWidget * h1 = gtk_flow_box_new();
+    
+    gtk_flow_box_insert( ( GtkFlowBox * )h1, botao_01, 0 );
+    gtk_flow_box_insert( ( GtkFlowBox * )h1, botao_02, 1 );
+    gtk_flow_box_insert( ( GtkFlowBox * )h1, botao_03, 2 );
+    gtk_flow_box_insert( ( GtkFlowBox * )h1, botao_04, 3 );
+
+    gtk_flow_box_insert( ( GtkFlowBox * )h1, botao_05, 4 );
+    gtk_flow_box_insert( ( GtkFlowBox * )h1, botao_06, 5 );
+
+    gtk_container_add( GTK_CONTAINER( janela ), h1 );
+    
+    gtk_widget_show_all( janela );
+    
+    gtk_main();
+    
+    return 0;
+}
+
+</pre>
+</body>
+</html>
