@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:260px;padding:5px;">&nbsp;&nbsp;GTK - Tabela 01 de 04</h2>
+<br/>
+<a href="https://youtu.be/zPWcSyuNcQE" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;gtk/gtk.h&gt;
+
+int main(int argc, char **argv)
+{
+  gtk_init(&argc, &argv);
+
+  GtkBuilder * builder = gtk_builder_new_from_file( "tabela_treeview.ui" );
+  GtkWidget * layout = GTK_WIDGET( gtk_builder_get_object( builder, "janela_layout" ) );
+  GtkWidget * janela = GTK_WIDGET( gtk_builder_get_object( builder, "janela_principal" ) );
+  GtkWidget * treeview = GTK_WIDGET( gtk_builder_get_object( builder, "treeview" ) );
+
+  gtk_window_resize( ( GtkWindow * )janela, 600, 500 );
+
+  g_signal_connect( janela, "destroy", gtk_main_quit, NULL);
+
+  //
+  // criar estrutura do treeview
+  //
+  GtkCellRenderer * renderer = 0;
+
+  renderer = gtk_cell_renderer_text_new();
+
+  const int COLUNA_NUMERO = 0;
+  const int COLUNA_TEXTO = 1;
+  const int TOTAL_COLUNAS = 2;
+  
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW( treeview ),
+                                               -1,      
+                                               "Número",  
+                                               renderer,
+                                               "text", 
+                                               COLUNA_NUMERO,
+                                               NULL);
+
+  renderer = gtk_cell_renderer_text_new();
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW( treeview ),
+                                               -1,      
+                                               "Texto",  
+                                               renderer,
+                                               "text", 
+                                               COLUNA_TEXTO,
+                                               NULL);
+
+
+  //
+  // criar o modelo de dados ( conteudo das linhas e colunas )
+  //
+  GtkListStore *store = gtk_list_store_new( TOTAL_COLUNAS,
+                                            G_TYPE_UINT,
+                                            G_TYPE_STRING );
+
+  /* Append a row and fill in some data */
+  GtkTreeIter iter;
+
+  // 1a. linha
+  gtk_list_store_append(store, &iter);
+
+  gtk_list_store_set( store, 
+                      &iter,
+                      COLUNA_NUMERO, 
+                      001,
+                      COLUNA_TEXTO,
+                      "Texto do item 001",
+                      -1 );
+
+  // 2a. linha
+  gtk_list_store_append(store, &iter);
+
+  gtk_list_store_set( store, 
+                      &iter,
+                      COLUNA_NUMERO, 
+                      002,
+                      COLUNA_TEXTO,
+                      "Texto do item 002",
+                      -1 );
+
+  // 3a. linha
+  gtk_list_store_append(store, &iter);
+
+  gtk_list_store_set( store, 
+                      &iter,
+                      COLUNA_NUMERO, 
+                      003,
+                      COLUNA_TEXTO, 
+                      "Texto do item 003",
+                      -1 );
+
+  GtkTreeModel * modelo = GTK_TREE_MODEL(store);
+
+  //
+  // adicionar o modelo ao treeview
+  //
+  gtk_tree_view_set_model(GTK_TREE_VIEW( treeview ), modelo );
+
+  //
+  // modelo ja copiado para a arvore ou ele sera desalocado
+  // da memoria ao termino do programa ou voce pode 
+  // executar o comando abaixo
+  g_object_unref( modelo );
+
+
+  //gtk_container_add(GTK_CONTAINER( janela ), treeview );
+
+  gtk_widget_show_all( janela );
+
+  gtk_main();
+
+  return 0;
+}
+
+</pre>
+</body>
+</html>
