@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:150px;padding:5px;">&nbsp;&nbsp;Administrador</h2>
+<br/>
+<a href="https://youtu.be/aGQh-H_awLQ" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;windows.h&gt;
+
+int main()
+{
+    TOKEN_ELEVATION elevation;
+    DWORD dwSize;
+    HANDLE hToken = 0;
+    BOOL rc = FALSE;
+
+    rc = OpenProcessToken( GetCurrentProcess(), TOKEN_QUERY, &hToken);
+
+    if ( !rc )
+    {
+        printf( "erro em OpenProcessToken: %d\n", GetLastError() );
+        return 1;
+    }
+
+    rc = GetTokenInformation(hToken, TokenElevation, &elevation, sizeof(elevation), &dwSize);
+
+    if ( !rc )
+	{
+        printf( "erro em GetTokenInformation: %d\n", GetLastError() );
+	}
+
+	if ( elevation.TokenIsElevated )
+    {
+        printf( "ADMINISTRADOR\n" );
+    }
+    else
+    {
+        printf( "USUARIO\n" );
+    }
+
+    system( "pause" );
+    return 0;
+}
+
+</pre>
+</body>
+</html>
