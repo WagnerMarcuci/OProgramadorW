@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:240px;padding:5px;">&nbsp;&nbsp;Cabeçalho dirent.h</h2>
+<br/>
+<a href="https://youtu.be/czFFfDeVyiM"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;dirent.h&gt;
+#include &lt;errno.h&gt;
+
+main(int argc, char *argv[])
+{
+    DIR * dir = 0;
+    struct dirent * dirp;
+    char diretorio[] = ".";
+
+    dir = opendir( diretorio );
+
+    if ( !dir )
+    {
+        switch( errno )
+        {
+            case EACCES:
+                printf( "A permissao de pesquisa e negada para o componente do prefixo do caminho de dirname ou a permissao de leitura e negada para dirname.\n" );
+                break;
+
+            case ELOOP:
+                printf( "Existe um loop em links simbolicos encontrados durante a resolução do argumento dirname.\n" );
+                break;
+
+            case ENAMETOOLONG:
+                printf( "O comprimento do argumento dirname excede {PATH_MAX} ou um componente pathname e maior que {NAME_MAX}.\n" );
+                break;
+
+            case ENOENT:
+                printf( "Um componente de dirname nao nomeia um diretorio existente ou dirname e uma string vazia.\n" );
+                break;
+
+            case ENOTDIR:
+                printf( "Um componente de dirname nao e um diretorio.\n" );
+                break;
+
+            case EMFILE:
+                printf( "Os descritores de arquivo {OPEN_MAX} estao abertos no processo de chamada.\n" );
+                break;
+
+            case ENFILE:
+                printf( "Muitos arquivos estao atualmente abertos no sistema.\n" );
+
+            default:
+                printf( "erro indefinido.\n" );
+                break;
+        }
+        printf( "erro ao abrir diretorio: %s.\n", diretorio );
+        return 1;
+    }
+
+    printf( "d_ino | d_reclen | d_namlen | d_name\n" );
+
+    //seekdir( dir, 3 );
+
+    while( dirp = readdir( dir ) )
+    {
+        printf( "%5d | %8d | %8d | %s\n", dirp-&gt;d_ino,
+                                          dirp-&gt;d_reclen,
+                                          dirp-&gt;d_namlen,
+                                          dirp-&gt;d_name );
+        //printf( "telldir: %d\n", telldir( dir ) );
+    }
+
+//    // rebobinar
+//    rewinddir( dir );
+//    printf( "-- REBOBINANDO --\n" );
+//    printf( "d_ino | d_reclen | d_namlen | d_name\n" );
+//
+//    while( dirp = readdir( dir ) )
+//    {
+//        printf( "%5d | %8d | %8d | %s\n", dirp-&gt;d_ino,
+//                                          dirp-&gt;d_reclen,
+//                                          dirp-&gt;d_namlen,
+//                                          dirp-&gt;d_name );
+//    }
+
+    closedir( dir );
+
+    printf( "\n\n\n" );
+    return 0;
+}
+
+</pre>
+</body>
+</html>
