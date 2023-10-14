@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:180px;padding:5px;">&nbsp;&nbsp;cabeçalho io.h</h2>
+<br/>
+<a href="https://youtu.be/lv-p6qCDy4s" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;io.h&gt;
+#include &lt;fcntl.h&gt;
+
+main(int argc, char *argv[])
+{
+    int rc = 0;
+
+    // renomear arquivo
+//    rc = rename( "arquivo.txt", "novo.txt" );
+//    printf( "rename: %d\n", rc );
+
+    // apagar arquivo
+//    rc = remove( "novo.txt" );
+//    printf( "remove: %d\n", rc );
+
+    // apagar arquivo tambem
+//    rc = unlink( "arquivo.txt" );
+//    printf( "unlink: %d\n", rc );
+
+    // verificar se o arquivo existe
+//    rc = _access( "arquivo.txt", 0 );
+//    printf( "_access: arquivo existe: %d\n", rc );
+
+
+    // verificar se o arquivo eh de gravacao
+//    rc = _access( "arquivo.txt", 2 );
+//    printf( "_access: arquivo pode gravar: %d\n", rc );
+
+
+    // verificar se o arquivo eh de leitura
+//    rc = _access( "arquivo.txt", 4 );
+//    printf( "_access: arquivo pode ler: %d\n", rc );
+
+
+    // verificar se o arquivo eh de leitura/gravacao
+//    rc = _access( "arquivo.txt", 6 );
+//    printf( "_access: arquivo pode ler/gravar: %d\n", rc );
+
+    // verificar se o arquivo existe, mas retorna errno
+//    rc = _access_s( "barquivo.txt", 0 );
+//    printf( "_access: erro existe: %s\n", strerror( rc ) );
+
+    // verificar se o arquivo eh de gravacao, mas retorna errno
+//    rc = _access( "barquivo.txt", 2 );
+//    printf( "_access: erro gravar: %s\n", strerror( rc ) );
+
+
+    // verificar se o arquivo eh de leitura, mas retorna errno
+//    rc = _access( "barquivo.txt", 4 );
+//    printf( "_access: erro ler: %s\n", strerror( rc ) );
+
+
+    // verificar se o arquivo eh de leitura/gravacao, mas retorna errno
+//    rc = _access( "barquivo.txt", 6 );
+//    printf( "_access: erro ler/gravar: %s\n", strerror( rc ) );
+
+    // alterar tamanho do arquivo em bytes
+//    int handle = _open( "arquivo.txt", _O_RDWR );
+//    long chsize_tamanho = 50;
+//    rc = _chsize( handle, chsize_tamanho );
+//    printf( "_access: _chsize : %d\n", rc );
+//    _close( handle );
+
+
+    // alterar tamanho do arquivo em bytes, mas retorna errno
+//    int handle = _open( "barquivo.txt", _O_RDWR );
+//    long chsize_tamanho = 50;
+//    rc = _chsize_s( handle, chsize_tamanho );
+//    printf( "_access_s: erro ler/gravar: %s\n", strerror( rc ) );
+//    _close( handle );
+
+
+    printf( "\n\n\n" );
+    return 0;
+}
+
+</pre>
+</body>
+</html>
