@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:160px;padding:5px;">&nbsp;&nbsp;GTK - Glade</h2>
+<br/>
+<a href="https://youtu.be/WZlu6bUrJ0U" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;gtk/gtk.h&gt;
+#include &lt;stdio.h&gt;
+
+GtkWidget * g_label = 0;
+
+void click_botao( void )
+{
+    printf( "botao clicado\n" );
+
+    // alterar texto do label
+    //gtk_label_set_text( ( GtkLabel * )g_label, "NOVO TEXTO" );
+
+    //quebra de linha
+    //gtk_label_set_text( ( GtkLabel * )g_label, "NOVO TEXTO MUITO LONGO PARA FICAR NA LINHA" );
+    //gtk_label_set_line_wrap( ( GtkLabel * )g_label, TRUE );
+
+    //obter o texto do label
+    //const char * texto = gtk_label_get_text( ( GtkLabel * )g_label );
+    //printf( "texto do label: %s\n", texto );
+
+    // tooltip
+    //gtk_widget_set_tooltip_text ( ( GtkWidget  * )g_label, "EU SOU UM TOOLTIP" );
+
+    //link
+    //gtk_label_set_markup( ( GtkLabel * )g_label, "&lt;a href='www.google.com'&gt;Google&lt;/a&gt;" );
+
+    // fonte e cor
+    //char * formatar = "&lt;span font='14' color='blue' background='yellow'&gt;TEXTO&lt;/span&gt;";
+    //gtk_label_set_markup( ( GtkLabel * )g_label, formatar );
+
+//https://docs.gtk.org/Pango/
+}
+
+gboolean on_activate_link ( GtkLabel* self, gchar* uri, gpointer user_data )
+{
+    printf( "pointer label: %p\n", self );
+    printf( "uri: %s\n", ( char *)uri );
+    printf( "dados: %s\n", ( char *)user_data );
+}
+
+int main( int argc, char * argv[] )
+{
+    GtkWidget * janela = NULL;
+    
+    gtk_init( &argc, &argv );
+    
+    janela = gtk_window_new( GTK_WINDOW_TOPLEVEL );
+    
+    g_signal_connect( janela, "destroy", G_CALLBACK( gtk_main_quit ), NULL );
+    
+    gtk_widget_show( janela );
+    
+    gtk_window_set_title( ( GtkWindow * )janela, "Titulo da Janela" );
+    
+    gtk_window_resize( ( GtkWindow * )janela, 400, 500 );
+    
+    g_label = gtk_label_new( "LABEL ANTIGO." );
+    GtkWidget * botao = gtk_button_new();
+    GtkWidget * v1 = gtk_box_new( GTK_ORIENTATION_VERTICAL, 5 );
+    
+    g_signal_connect( botao, "clicked", G_CALLBACK( click_botao  ), "dados" );
+
+    g_signal_connect( g_label, "activate_link", 
+        G_CALLBACK( on_activate_link  ), "dados" );
+
+    gtk_button_set_label( ( GtkButton * )botao, "CLICK AQUI" );
+    gtk_box_pack_start( GTK_BOX( v1 ), g_label, FALSE, FALSE, 0 );
+    gtk_box_pack_start( GTK_BOX( v1 ), botao, FALSE, FALSE, 0 );
+
+    gtk_container_add( GTK_CONTAINER( janela ), v1 );
+    
+    gtk_widget_show_all( janela );
+    
+    gtk_main();
+    
+    return 0;
+}
+
+
+</pre>
+</body>
+</html>
