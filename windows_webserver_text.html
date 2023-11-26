@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:150px;padding:5px;">&nbsp;&nbsp;Windows - WebServer</h2>
+<br/>
+<a href="https://www.youtube.com/watch?v=V2O7cUNjQpM"
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#define WIN32_LEAN_AND_MEAN
+
+#include &lt;iostream&gt;
+#include &lt;windows.h&gt;
+#include &lt;winsock.h&gt;
+// linkar biblioteca ws2_32.lib
+
+int main(int argc, char *argv[])
+{
+    WSAData version;
+
+    if ( WSAStartup( MAKEWORD( 2, 2 ), &version ) != 0 )
+    {
+        std::cout &lt;&lt; "erro: " &lt;&lt; WSAGetLastError() &lt;&lt; std::endl;
+        return 1;
+    }
+
+    SOCKET servidor = socket( PF_INET, SOCK_STREAM, IPPROTO_IP );
+
+    if ( servidor == SOCKET_ERROR )
+    {
+        std::cout &lt;&lt; "erro socket: " &lt;&lt; WSAGetLastError() &lt;&lt; std::endl;
+        return 1;
+    }
+
+    struct sockaddr_in servidorAddr;
+
+    servidorAddr.sin_family = AF_INET;
+    servidorAddr.sin_addr.s_addr = htonl( INADDR_ANY );
+    servidorAddr.sin_port = htons( 8090 );
+
+    if ( bind( servidor, ( struct sockaddr *)&servidorAddr, sizeof( servidorAddr ) ) == SOCKET_ERROR )
+    {
+        std::cout &lt;&lt; "erro bind: " &lt;&lt; WSAGetLastError() &lt;&lt; std::endl;
+        return 1;
+    }
+
+    std::cout &lt;&lt; "listen..." &lt;&lt; std::endl;
+
+    if ( listen( servidor, 5  ) == SOCKET_ERROR )
+    {
+        std::cout &lt;&lt; "erro listen: " &lt;&lt; WSAGetLastError() &lt;&lt; std::endl;
+        return 1;
+    }
+
+    struct sockaddr_in clienteAddr;
+    int tamanho = sizeof( clienteAddr );
+
+    SOCKET cliente = accept( servidor, ( struct sockaddr *)&clienteAddr, &tamanho );
+
+    if ( cliente == SOCKET_ERROR )
+    {
+        std::cout &lt;&lt; "erro accept: " &lt;&lt; WSAGetLastError() &lt;&lt; std::endl;
+        return 1;
+    }
+
+    std::cout &lt;&lt; "accept: " &lt;&lt; inet_ntoa( clienteAddr.sin_addr ) &lt;&lt; " | " &lt;&lt; cliente &lt;&lt; std::endl;
+
+    char buffer[ 1023 + 1 ];
+    memset( buffer, '\0', 1024 );
+
+    int n = recv( cliente, buffer, 1023, 0 );
+
+    std::cout &lt;&lt; "retorno: " &lt;&lt; n &lt;&lt; std::endl;
+    std::cout &lt;&lt; buffer &lt;&lt; std::endl;
+
+    // resposta
+    std::cout &lt;&lt; "enviar resposta" &lt;&lt; std::endl;
+    char resposta[ 4096 ] = "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain\r\n"
+        "Content-Length: 12\r\n\r\nHello World!\r\n\r\n";
+
+    if ( send( cliente, resposta, strlen( resposta ), 0 ) == SOCKET_ERROR )
+    {
+        std::cout &lt;&lt; "erro send: " &lt;&lt; WSAGetLastError() &lt;&lt; std::endl;
+    }
+
+    Sleep( 1000 ); // tempo para atualizar a tela
+    closesocket( servidor );
+
+    WSACleanup();
+    return 0;
+}
+
+</pre>
+</body>
+</html>
