@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt_BR>
+<head>
+    <title>Wagner Marcuci Software C/C++</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body style="background-color:black; color:white;" alink="white" link="white" vlink="white">
+<h2 style="border: 1px solid white;width:350px;padding:5px;">&nbsp;&nbsp;Tamanho da Fonte na Console</h2>
+<br/>
+<a href="https://youtu.be/AXv2by9t87w" 
+style="font-family:Candara;text-decoration:none;color:red;">V&iacute;deo do Canal</a>
+</br></br>
+<pre>
+#include &lt;iostream&gt;
+#include &lt;windows.h&gt;
+
+int main()
+{
+    CONSOLE_FONT_INFOEX font;
+
+    font.cbSize = sizeof( font );
+    font.nFont = 0;
+    font.dwFontSize.X = 0;
+    font.dwFontSize.Y = 24;
+    font.FontFamily = FF_MODERN;
+    font.FontWeight = FW_NORMAL;
+    wcscpy( font.FaceName, L"Consolas" );
+
+    SetCurrentConsoleFontEx( GetStdHandle( STD_OUTPUT_HANDLE ), FALSE, &font );
+    // FALSE - somente na janela atual
+    // TRUE - tamanho máximo da janela
+
+    std::cout &lt;&lt; "\n\n\t\tTESTE DE FONTE\n\n\n" &lt;&lt; std::endl;
+    return 0;
+}
+</pre>
+</body>
+</html>
